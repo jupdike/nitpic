@@ -1,0 +1,149 @@
+body {
+  background: #fff;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  /*line-height: 1.7;*/
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: #4183c4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+code {
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-family: "Bitstream Vera Sans Mono", Consolas, Courier, monospace;
+  font-size: 12px;
+  margin: 0 2px;
+  padding: 0 5px;
+}
+
+h1, h2, h3, h4 {
+  font-weight: bold;
+  margin: 0 0 15px;
+  padding: 0;
+}
+
+h1 {
+  border-bottom: 1px solid #ddd;
+  font-size: 2.5em;
+}
+
+h2 {
+  border-bottom: 1px solid #eee;
+  font-size: 2em;
+}
+
+h3 {
+  font-size: 1.5em;
+}
+
+h4 {
+  font-size: 1.2em;
+}
+
+p, ul {
+  margin: 15px 0;
+}
+
+ul {
+  padding-left: 30px;
+}
+
+.pic {
+  display: inline-block;
+  vertical-align: top;
+  background-color: white;
+  width: 168px;
+  height: 264px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #eee;
+}
+.pic img {
+  margin-top: 4px;
+  margin-left: 4px;
+  margin-right: 4px;
+  width: 160px;
+  height: auto;
+}
+.pic-cap {
+  padding: 4px;
+}
+
+.thumb {
+  display: inline-block;
+  vertical-align: top;
+  width: 160px;
+  height: 160px;
+  margin: 0;
+  padding: 0;
+}
+
+.black {
+  margin: 0;
+  padding: 0;
+  max-height: 160px;
+  display: inline-block;
+}
+
+.thumb .caption-top {
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  color: #ccc;
+  padding: 3px;
+  max-width: 150px;
+  max-height: 150px;
+  background-color: rgba(0, 0, 0, 0.4);
+  text-align: center;
+  margin: 5px;
+  margin-top: 40px;
+}
+
+.thumb .caption-bottom {
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  max-width: 128px;
+  padding: 3px;
+  color: #aaa;
+  background-color: rgba(0, 0, 0, 0.33);
+  text-align: center;
+  margin: 5px;
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+.big {
+  background-color: #333;
+  width: 96vw;
+  height: 54vw;
+}
+
+.big img.full {
+  width: 100%;
+  height: auto;
+}
+
+/* pure CSS hover solution */
+
+.thumb img {
+  display: inline;
+}
+.thumb .black {
+  display: none;
+}
+
+.thumb:hover img {
+  display: none;
+}
+.thumb:hover .black {
+  display: inline-block;
+}
