@@ -1,12 +1,32 @@
 const {app, BrowserWindow} = require('electron')
 const path = require('path')
 const url = require('url')
+const fs = require('fs')
+
+import NitpicSettings from './settings'
+//const {NitpicSettings} = require('build/settings.js');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
 
+const os = require('os');
+
+// /Users/jupdike/Library/Application Support
+
+function getAppDataPath() {
+	switch (process.platform) {
+		case 'win32': return process.env['APPDATA'] || path.join(process.env['USERPROFILE'], 'AppData', 'Roaming');
+		case 'darwin': return path.join(os.homedir(), 'Library', 'Application Support');
+		case 'linux': return process.env['XDG_CONFIG_HOME'] || path.join(os.homedir(), '.config');
+		default: throw new Error('Platform not supported');
+	}
+}
+
 function createWindow () {
+  var datapath = path.join(getAppDataPath(), 'Nitpic', 'Settings');
+  var nitpicSettings = new NitpicSettings(datapath);
+
   // Create the browser window.
   win = new BrowserWindow({width: 800, height: 600})
 
@@ -18,7 +38,7 @@ function createWindow () {
   }))
 
   // Open the DevTools.
-  win.webContents.openDevTools()
+  //win.webContents.openDevTools()
 
   // Emitted when the window is closed.
   win.on('closed', () => {

@@ -1,3 +1,7 @@
+import MyCode from './mycode'
+import React = require("react");
+import TypedReact = require("typed-react");
+
 var Gallery = (function() {
 var makethumburl = MyCode.makethumburl;
 var ajaxGetHelper = MyCode.ajaxGetHelper;

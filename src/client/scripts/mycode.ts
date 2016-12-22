@@ -1,4 +1,4 @@
-class MyCode {
+export default class MyCode {
 
   public static getField(desc, key, defaulty) {
     var ret = defaulty;
