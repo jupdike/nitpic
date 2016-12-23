@@ -9,6 +9,7 @@
   },
   "devDependencies": {
     "@types/jquery": "^2.0.34",
+    "@types/node": "^6.0.53",
     "@types/react": "^0.14.55"
   }
 }

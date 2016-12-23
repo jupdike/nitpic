@@ -12,7 +12,7 @@ let win
 
 const os = require('os');
 
-// /Users/jupdike/Library/Application Support
+// /Users/jupdike/Library/Application Support/nitpic/Settings/
 
 function getAppDataPath() {
 	switch (process.platform) {
@@ -23,7 +23,7 @@ function getAppDataPath() {
 	}
 }
 
-function createWindow () {
+function createWindow() {
   var datapath = path.join(getAppDataPath(), 'Nitpic', 'Settings');
   var nitpicSettings = new NitpicSettings(datapath);
 
