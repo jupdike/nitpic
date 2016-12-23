@@ -5,9 +5,17 @@ const path = require('path')
 const ipc = require('electron').ipcMain
 const dialog = require('electron').dialog
 
-interface Action {
-  (any): void;
+function String_startswith(that, test): boolean {
+  return that.lastIndexOf(test, 0) === 0;
+};
+
+interface String {
+  startswith: (str: string) => boolean;
 }
+
+String.prototype.startswith = function(test): boolean {
+  return this.lastIndexOf(test, 0) === 0;
+};
 
 export default class NitpicSettings {
   settings: any = {};
@@ -17,7 +25,7 @@ export default class NitpicSettings {
     }
     catch (e) {
     }
-    
+
     let settingsFile = path.join(this.datapath, 'nitpic.json');
     console.error("settings file should be here: " + settingsFile);
     this.settings = { }
@@ -47,6 +55,21 @@ export default class NitpicSettings {
         }
       }
     });
+
+    var files: Array<string> = this.chooseDir('albumName', this.inputRootDir());
+    if (files && files.length > 0) {
+      console.error(files);
+      var base = this.inputRootDir();
+      var name = files[0].replace(base, '');
+      if (String_startswith(name, '/')) {
+        name = name.slice(1);
+      }
+      if (String_startswith(name, '\\')) {
+        name = name.slice(1);
+      }
+      this.settings['albumName'] = name;
+    }
+
     var all = JSON.stringify(this.settings, null, 2);
     fs.writeFileSync(settingsFile, all);
     console.error('wrote:');
@@ -61,7 +84,20 @@ export default class NitpicSettings {
     return this.settings.outputRootDir as string;
   }
 
-  chooseDir(s: string): Array<string> {
-    return dialog.showOpenDialog({ title: 'Select '+s, properties: ['openDirectory'] });
+  albumName(): string {
+    return this.settings.albumName as string;
+  }
+
+  with(kstr: string, v: any, dict: any) {
+    if (v) {
+      dict[kstr] = v;
+      return dict;
+    }
+    return dict;
+  }
+
+  chooseDir(s: string, defaultDir=null): Array<string> {
+    return dialog.showOpenDialog(this.with('defaultPath', defaultDir,
+    { title: 'Select '+s, properties: ['openDirectory'] }));
   }
 }
