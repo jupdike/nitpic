@@ -9,13 +9,12 @@ function String_startswith(that, test): boolean {
   return that.lastIndexOf(test, 0) === 0;
 };
 
-interface String {
-  startswith: (str: string) => boolean;
-}
-
-String.prototype.startswith = function(test): boolean {
-  return this.lastIndexOf(test, 0) === 0;
-};
+// interface String {
+//   startswith: (str: string) => boolean;
+// }
+// String.prototype.startswith = function(test): boolean {
+//   return this.lastIndexOf(test, 0) === 0;
+// };
 
 export default class NitpicSettings {
   settings: any = {};

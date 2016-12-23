@@ -3,7 +3,9 @@ const path = require('path')
 const url = require('url')
 const fs = require('fs')
 
+import Server from './Server'
 import NitpicSettings from './settings'
+
 //const {NitpicSettings} = require('build/settings.js');
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -23,9 +25,12 @@ function getAppDataPath() {
 	}
 }
 
+var settings: NitpicSettings;
+var server: Server;
+
 function createWindow() {
   var datapath = path.join(getAppDataPath(), 'Nitpic', 'Settings');
-  var nitpicSettings = new NitpicSettings(datapath);
+  settings = new NitpicSettings(datapath);
 
   // Create the browser window.
   win = new BrowserWindow({width: 800, height: 600})
@@ -37,8 +42,11 @@ function createWindow() {
     slashes: true
   }))
 
+  server = new Server("ignored", path.join(settings.inputRootDir(), settings.albumName()),
+    path.join(settings.outputRootDir(), settings.albumName()));
+
   // Open the DevTools.
-  //win.webContents.openDevTools()
+  win.webContents.openDevTools()
 
   // Emitted when the window is closed.
   win.on('closed', () => {
