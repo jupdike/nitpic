@@ -2,6 +2,7 @@ const {app, BrowserWindow} = require('electron')
 const path = require('path')
 const url = require('url')
 const fs = require('fs')
+const ipc = require('electron').ipcMain
 
 import Server from './Server'
 import NitpicSettings from './settings'
@@ -35,19 +36,6 @@ function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({width: 800, height: 600})
 
-  // and load the index.html of the app.
-  win.loadURL(url.format({
-    pathname: path.join(__dirname, 'client', 'index.html'),
-    protocol: 'file:',
-    slashes: true
-  }))
-
-  server = new Server("ignored", path.join(settings.inputRootDir(), settings.albumName()),
-    path.join(settings.outputRootDir(), settings.albumName()));
-
-  // Open the DevTools.
-  win.webContents.openDevTools()
-
   // Emitted when the window is closed.
   win.on('closed', () => {
     // Dereference the window object, usually you would store windows
@@ -55,7 +43,38 @@ function createWindow() {
     // when you should delete the corresponding element.
     win = null
   })
+
+  // and load the index.html of the app.
+  win.loadURL(url.format({
+    pathname: path.join(__dirname, 'client', 'index.html'),
+    protocol: 'file:',
+    slashes: true
+  }))
+  // Open the DevTools.
+  win.webContents.openDevTools()
 }
+
+function readMetadataAndNavigate() {
+  server = new Server("ignored", path.join(settings.inputRootDir(), settings.albumName()),
+    path.join(settings.outputRootDir(), settings.albumName()));
+  server.init();
+  server.readMetadata( () => {
+
+    // // load edit.html when metadata finishes loading
+    // win.loadURL(url.format({
+    //   pathname: path.join(__dirname, 'client', 'edit.html'),
+    //   protocol: 'file:',
+    //   slashes: true
+    // }))
+
+    //win.webContents.openDevTools()
+  });
+}
+
+ipc.on('index-page-loaded', (event) => {
+  console.error('index page loaded!');
+  readMetadataAndNavigate();
+});
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

@@ -109,8 +109,13 @@ export default class Server {
   sapp = express();
 
   constructor(public cmd: string, public basesrc: string, public baseout: string) {
-    this.init();
-    this.readMetadata();
+    try {
+      fs.mkdirSync(baseout); // it's ok if it exists
+    }
+      catch (e) {
+    }
+    //this.init();
+    //this.readMetadata(null);
   }
 
   init() {
@@ -189,7 +194,7 @@ export default class Server {
     });
   }
 
-  readMetadata() {
+  readMetadata(callback) {
     if (this.cmd === 'server') {
       this.sapp.listen(this.sapp.get('port'), () => {
         console.log('Server started: http://localhost:' + this.sapp.get('port') + '/');
@@ -232,6 +237,8 @@ export default class Server {
     });
     fs.writeSync(2, "\n");
 
+    // done now, call callback
+    callback();
     // TODO use cmd at some point, esp. if we do the image magick convert calls from Node.js instead of Python
 
   }
