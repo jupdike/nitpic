@@ -80,6 +80,7 @@ export default class Server {
   readOneJpegExif(fname, ob) {
     const args = ['-P','X','pr',this.basesrc+'/'+fname];
     const child = execFile(exiv2, args, (error, stdout, stderr) => {
+      //console.log("returned from exiv2 "+fname);
       stdout.split('\n').forEach( (val, index, array) => {
         var k = null;
         if (val.indexOf(XMP_DC_TITLE) >= 0) {
@@ -101,7 +102,7 @@ export default class Server {
         }
       });
       this.set4x4PixelString(ob);
-      //console.log("GOT> fname: " + fname + "  desc: " + ob.desc + "  title: "+ob.title);
+      console.log("GOT> fname: " + fname + "  desc: " + ob.desc + "  title: "+ob.title);
     });
   }
 
@@ -114,14 +115,15 @@ export default class Server {
     }
       catch (e) {
     }
-    //this.init();
+    this.init();
     //this.readMetadata(null);
   }
 
   init() {
     this.sapp.set('port', (process.env.PORT || 3000));
+    console.log('serving on port: ' + (process.env.PORT || 3000));
 
-    this.sapp.use('/', express.static(path.join(__dirname, 'public')));
+    //this.sapp.use('/', express.static(path.join(__dirname, 'public')));
 
     this.sapp.use('/thumbs/', express.static(this.baseout));
 
@@ -192,14 +194,18 @@ export default class Server {
       });
 
     });
-  }
 
-  readMetadata(callback) {
-    if (this.cmd === 'server') {
+    //if (this.cmd === 'server') {
       this.sapp.listen(this.sapp.get('port'), () => {
         console.log('Server started: http://localhost:' + this.sapp.get('port') + '/');
       });
-    }
+    //}
+
+  }
+
+  readMetadata(callback) {
+
+    console.log("READING METADATA");
 
     // read the stuff from JPEG files into JSON objects!
     var files = fs.readdirSync(this.basesrc);
@@ -218,7 +224,7 @@ export default class Server {
 
     //console.log(files);
     //console.log('---');
-    files.reverse(); // proves that the problem is the number of files, and nothing to do with the files themseleves
+    //files.reverse(); // proves that the problem is the number of files, and nothing to do with the files themseleves
     //console.log(files);
 
     files.forEach((val, index, array) => {
@@ -236,6 +242,9 @@ export default class Server {
       }
     });
     fs.writeSync(2, "\n");
+
+    fs.writeSync(2, "DONE READING METADATA");
+    fs.writeSync(2, this.state);
 
     // done now, call callback
     callback();

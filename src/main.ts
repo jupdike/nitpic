@@ -33,6 +33,9 @@ function createWindow() {
   var datapath = path.join(getAppDataPath(), 'Nitpic', 'Settings');
   settings = new NitpicSettings(datapath);
 
+  server = new Server("ignored", path.join(settings.inputRootDir(), settings.albumName()),
+    path.join(settings.outputRootDir(), settings.albumName()));
+
   // Create the browser window.
   win = new BrowserWindow({width: 800, height: 600})
 
@@ -46,7 +49,7 @@ function createWindow() {
 
   // and load the index.html of the app.
   win.loadURL(url.format({
-    pathname: path.join(__dirname, 'client', 'index.html'),
+    pathname: path.join(__dirname, 'client', 'edit.html'),
     protocol: 'file:',
     slashes: true
   }))
@@ -54,20 +57,24 @@ function createWindow() {
   win.webContents.openDevTools()
 }
 
+// this doesn't exist because there may be more than one window but there is always only one main process for the renderer (browser window) processes to talk to
+// but they don't say that in the docs, which is asinine
+function ipc_send(msg) {
+  win.webContents.send(msg);
+}
+
 function readMetadataAndNavigate() {
-  server = new Server("ignored", path.join(settings.inputRootDir(), settings.albumName()),
-    path.join(settings.outputRootDir(), settings.albumName()));
-  server.init();
   server.readMetadata( () => {
 
-    // // load edit.html when metadata finishes loading
+    ipc_send('metadata-read'); // WTF dumb-asses --- violates the principal of least surprise
+    // load edit.html when metadata finishes loading
     // win.loadURL(url.format({
     //   pathname: path.join(__dirname, 'client', 'edit.html'),
     //   protocol: 'file:',
     //   slashes: true
     // }))
 
-    //win.webContents.openDevTools()
+    // win.webContents.openDevTools()
   });
 }
 

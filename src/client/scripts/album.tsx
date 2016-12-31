@@ -3,20 +3,24 @@
 
 import MyCode from './mycode'
 import React = require("react");
-import TypedReact = require("typed-react");
 
-var Album = React.createClass({
-  getInitialState: function() {
-    return { data: { list: [], bykey: {} } };
-  },
-  componentDidMount: function() {
+export interface AlbumProps {
+  url: string;
+}
+export interface AlbumState {
+  data: any
+}
+export class Album extends React.Component<AlbumProps, AlbumState> {
+  state: AlbumState = { data: { list: [], bykey: {} } }
+  componentDidMount() {
     MyCode.ajaxGetHelper(this.props.url,
       (data) => {
+        console.log(data);
         this.setState({data: data});
       });
-  },
-  render: function() {
-    var picNodes = this.state.data.list.map(function (pic) {
+  }
+  render() {
+    var picNodes = this.state.data.list.map((pic) => {
       return (
         <Pic key={pic.fname}
              fname={pic.fname} desc={pic.desc} title={pic.title} />
@@ -28,16 +32,25 @@ var Album = React.createClass({
       </div>
     );
   }
-});
+}
 
-var Pic: any = React.createClass({
-  getInitialState: function() {
-    return{ title: this.props.title,
-            desc: this.props.desc,
-            fname: this.props.fname
-          }
-  },
-  handleCaptionDone: function(key, arg) {
+interface PicProps {
+  title, desc, fname: string
+}
+interface PicState {
+  desc, title, fname: string
+}
+class Pic extends React.Component<PicProps, PicState> {
+  state: PicState;
+  constructor(props: PicProps) {
+    super(props);
+    this.state = {
+      title: this.props.title,
+      desc: this.props.desc,
+      fname: this.props.fname
+    }
+  }
+  handleCaptionDone(key, arg) {
     var newObj = null;
     if (key === 'title') {
       newObj = { title: arg, fname: this.state.fname, desc: this.state.desc };
@@ -51,8 +64,9 @@ var Pic: any = React.createClass({
         //console.log(data);
         this.setState(data);
       });
-  },
-  render: function() {
+  }
+  render() {
+    console.log(this.state);
     return (
       <div className="pic">
         <img src={MyCode.makethumburl(this.state.fname, this.state.desc)} />
@@ -61,30 +75,41 @@ var Pic: any = React.createClass({
       </div>
     );
   }
-});
+}
 
-var Caption: any = React.createClass({
-  getInitialState: function() {
-    return { editing: false, val: this.props.initValue };
-  },
-  handleClick: function() {
-    this.setState({editing: true});
-  },
-  handleTextChange: function(e) {
+interface CaptionProps {
+  initValue: string
+  onDone: any
+}
+interface CaptionState {
+  editing: boolean
+  val: string
+}
+class Caption extends React.Component<CaptionProps, CaptionState> {
+  state: CaptionState
+  constructor(props: CaptionProps) {
+    super(props);
+    this.state = { editing: false, val: this.props.initValue };
+    //console.log(this.state);
+  }
+  handleClick() {
+    this.setState({editing: true, val: this.state.val});
+  }
+  handleTextChange(e) {
     this.setState({editing: true, val: e.target.value});
-  },
-  handleBlur: function(e) {
-    this.setState({editing: false});
+  }
+  handleBlur(e) {
+    this.setState({editing: false, val: this.state.val});
     this.props.onDone(e.target.value);
-  },
+  }
   // prevent pressing enter when meaning to submit but default is to insert new line since textarea is multiline
-  handleKeyDown: function(e) {
+  handleKeyDown(e) {
     if (e.keyCode == 13) {
       e.preventDefault();
       e.target.blur();
     }
-  },
-  render: function() {
+  }
+  render() {
     if (this.state.editing)
       return (
         <textarea
@@ -102,4 +127,4 @@ var Caption: any = React.createClass({
         <div className="pic-cap" onClick={this.handleClick}>{this.state.val}</div>
       );
   }
-});
+}
