@@ -15,7 +15,6 @@ export class Album extends React.Component<AlbumProps, AlbumState> {
   componentDidMount() {
     MyCode.ajaxGetHelper(this.props.url,
       (data) => {
-        console.log(data);
         this.setState({data: data});
       });
   }
@@ -60,13 +59,10 @@ class Pic extends React.Component<PicProps, PicState> {
     // send this to the Model (on the server)
     MyCode.ajaxPostHelper('/api/pics', newObj,
       (data) => {
-        //console.log("got back changed state from server");
-        //console.log(data);
         this.setState(data);
       });
   }
   render() {
-    console.log(this.state);
     return (
       <div className="pic">
         <img src={MyCode.makethumburl(this.state.fname, this.state.desc)} />
@@ -90,7 +86,6 @@ class Caption extends React.Component<CaptionProps, CaptionState> {
   constructor(props: CaptionProps) {
     super(props);
     this.state = { editing: false, val: this.props.initValue };
-    //console.log(this.state);
   }
   handleClick() {
     this.setState({editing: true, val: this.state.val});

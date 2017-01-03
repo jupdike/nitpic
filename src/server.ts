@@ -4,6 +4,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const split = require('split')
 const {execFile} = require('child_process')
+const async = require('async')
 var pngparse = require("pngparse")
 import MyCode from './client/scripts/mycode'
 
@@ -77,7 +78,7 @@ export default class Server {
     });
   }
 
-  readOneJpegExif(fname, ob) {
+  readOneJpegExif(fname, ob, done) {
     const args = ['-P','X','pr',this.basesrc+'/'+fname];
     const child = execFile(exiv2, args, (error, stdout, stderr) => {
       //console.log("returned from exiv2 "+fname);
@@ -102,7 +103,8 @@ export default class Server {
         }
       });
       this.set4x4PixelString(ob);
-      console.log("GOT> fname: " + fname + "  desc: " + ob.desc + "  title: "+ob.title);
+      //console.log("GOT> fname: " + fname + "  desc: " + ob.desc + "  title: "+ob.title);
+      done(null); // no error... what to do in case of error?
     });
   }
 
@@ -211,45 +213,41 @@ export default class Server {
     var files = fs.readdirSync(this.basesrc);
     var dots = 0;
     var count = 0;
-    /*files.sort(function(aa,bb) {
-      var a = aa.toLowerCase();
-      var b = bb.toLowerCase();
-      if (a < b) {
-        return 1;
-      } else if (b > a) {
-        return -1;
-      }
-      return 0;
-    });*/
-
-    //console.log(files);
-    //console.log('---');
-    //files.reverse(); // proves that the problem is the number of files, and nothing to do with the files themseleves
-    //console.log(files);
-
-    files.forEach((val, index, array) => {
-      if (val.toLowerCase().endsWith('.jpg') || val.toLowerCase().endsWith('.jpeg')) {
+    async.forEachOfLimit(files, 32,
+      // call this function once for each file
+      (val, index, cb) => {
+        if (! (val.toLowerCase().endsWith('.jpg') || val.toLowerCase().endsWith('.jpeg')) ) {
+          cb(null); // skipped a file; must track this!
+          return;
+        }
         var ob = { fname: val, index: count }; // index != correct count since we skip .DS_STORE, etc. (frown)
         count++;
         this.state.list.push(ob);
         this.state.bykey[val] = ob;
-        var expectedDots = (index*100.0)/files.length;
-        while (dots < expectedDots) {
-          fs.writeSync(1, ".");
-          dots++;
+        this.readOneJpegExif(val, ob, (err) => {
+          if (err) {
+            console.error(err.message);
+          }
+          var expectedDots = (index*100.0)/files.length;
+          while (dots < expectedDots) {
+            fs.writeSync(1, ".");
+            dots++;
+          }
+          cb(err);
+        });
+      },
+      // done
+      (err) => {
+        if (err) {
+          console.error(err.message);
         }
-        this.readOneJpegExif(val, ob);
-      }
-    });
-    fs.writeSync(2, "\n");
-
-    fs.writeSync(2, "DONE READING METADATA");
-    fs.writeSync(2, this.state);
-
-    // done now, call callback
-    callback();
-    // TODO use cmd at some point, esp. if we do the image magick convert calls from Node.js instead of Python
-
+        fs.writeSync(2, "\nDONE READING METADATA\n");
+        // done now, call the server side callback thing, saying we are done reading all metadata
+        callback();
+     });
+    fs.writeSync(2, "Just called async.eachOfLimit on "+files.length+" files\n");
   }
 
 }
+
+// TODO use cmd at some point, esp. if we do the image magick convert calls from Node.js instead of Python
