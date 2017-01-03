@@ -304,9 +304,10 @@ export default class Server {
     }
     pub = pub + '';
     const out1 = pub+"/160."+e;
-    //work.push({fout:out1, args: pre + e + " -auto-orient [160x90] -thumbnail 160x90 -background #404044 -sharpen 1 -gravity Center -extent 160x90 "+out1});
+    // note no space between pre+e+"[160x90]" -- add a space on pain of death!
+    work.push({fout:out1, args: pre+e+"[160x90] -auto-orient -thumbnail 160x90 -background #404044 -sharpen 1 -gravity Center -extent 160x90 "+out1});
     const out2 = pub+"/1920."+e;
-    //work.push({fout:out2, args: "-auto-orient -quality 83 -resize 1920x1080> -background #404044 -gravity Center -sharpen 1 -extent 1920x1080 "+pre+e+" "+out2});
+    work.push({fout:out2, args: "-auto-orient -quality 83 -resize 1920x1080> -background #404044 -gravity Center -sharpen 1 -extent 1920x1080 "+pre+e+" "+out2});
     for (const grav of 'c n s e w'.split(' ')) {
       const out3 = pub+"/sq"+grav+"."+e;
       work.push({fout:out3, args: pre + e + ' -auto-orient -resize 256x256^ -sharpen 1 -gravity '+gravD[grav]+' -crop 256x256+0+0 '+out3});
