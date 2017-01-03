@@ -3,20 +3,16 @@ const path = require('path')
 const url = require('url')
 const fs = require('fs')
 const ipc = require('electron').ipcMain
+const os = require('os');
 
 import Server from './Server'
 import NitpicSettings from './settings'
-
-//const {NitpicSettings} = require('build/settings.js');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
 
-const os = require('os');
-
-// /Users/jupdike/Library/Application Support/nitpic/Settings/
-
+// on Mac this is /Users/jupdike/Library/Application Support/nitpic/Settings/
 function getAppDataPath() {
 	switch (process.platform) {
 		case 'win32': return process.env['APPDATA'] || path.join(process.env['USERPROFILE'], 'AppData', 'Roaming');
@@ -32,6 +28,8 @@ var server: Server;
 function createWindow() {
   var datapath = path.join(getAppDataPath(), 'Nitpic', 'Settings');
   settings = new NitpicSettings(datapath);
+
+  console.log("OS says it has this many cores: "+os.cpus().length); // could be 2x physical cores, because of hyper-threading
 
   server = new Server("ignored", path.join(settings.inputRootDir(), settings.albumName()),
     path.join(settings.outputRootDir(), settings.albumName()));
