@@ -21,11 +21,19 @@ baseout = process.argv[4];
 */
 
 const exiv2 = "/Users/jupdike/exiv2" // TODO need a way to package this in Electron bundle and reference it
+//const convert = "/bin/echo" // just for hack / testing
+const convert = "/usr/local/bin/convert" // ditto
+
+const gravD = {'c':'Center', 'n':'North',
+               's':'South', 'e':'East', 'w':'West'}
 
 const XMP_DC_TITLE = 'Xmp.dc.title'
 const XMP_DC_DESC  = 'Xmp.dc.description'
 
 export default class Server {
+
+  // read metadata
+
   get4x4Pixels(fname, succ) {
     pngparse.parseFile(fname, (err, data) => {
       if (err) {
@@ -107,6 +115,50 @@ export default class Server {
       done(null); // no error... what to do in case of error?
     });
   }
+
+  readMetadata(callback) {
+    console.log("READING METADATA");
+
+    // read the stuff from JPEG files into JSON objects!
+    var files = fs.readdirSync(this.basesrc);
+    var dots = 0;
+    var count = 0;
+    async.forEachOfLimit(files, 32,
+      // call this function once for each file
+      (val, index, cb) => {
+        if (! (val.toLowerCase().endsWith('.jpg') || val.toLowerCase().endsWith('.jpeg')) ) {
+          cb(null); // skipped a file; must track this!
+          return;
+        }
+        var ob = { fname: val, index: count }; // index != correct count since we skip .DS_STORE, etc. (frown)
+        count++;
+        this.state.list.push(ob);
+        this.state.bykey[val] = ob;
+        this.readOneJpegExif(val, ob, (err) => {
+          if (err) {
+            console.error(err.message);
+          }
+          var expectedDots = (index*100.0)/files.length;
+          while (dots < expectedDots) {
+            fs.writeSync(1, ".");
+            dots++;
+          }
+          cb(err);
+        });
+      },
+      // done
+      (err) => {
+        if (err) {
+          console.error(err.message);
+        }
+        fs.writeSync(2, "\nDONE READING METADATA\n");
+        // done now, call the server side callback thing, saying we are done reading all metadata
+        callback();
+     });
+    fs.writeSync(2, "Just called async.eachOfLimit on "+files.length+" files\n");
+  }
+
+  // constructor / init
 
   state = { list: [], bykey: {}, index: 0, key: 0 }
   sapp = express();
@@ -205,30 +257,84 @@ export default class Server {
 
   }
 
-  readMetadata(callback) {
+  // make thumbnails
 
-    console.log("READING METADATA");
+  fileExists(path) {
+    var stats = null;
+    try {
+      stats = fs.statSync(path);
+    }
+    catch (e) {
+      return false;
+    }
+    if (stats && stats.isFile()) {
+      return true;
+    }
+  }
 
-    // read the stuff from JPEG files into JSON objects!
+  convertOne(fout, args, done) {
+    if (this.fileExists(fout)) {
+      done(null);
+      return;
+    }
+    const child = execFile(convert, args.split(' '), (error, stdout, stderr) => {
+      if (error) {
+        console.error(error);
+      }
+      //console.log('DONE> convert '+args);
+      //stdout.split('\n').forEach( (val, index, array) => {
+        // TODOx
+      //}
+      done(null);
+    });
+  }
+
+  // each item is { args: '...', fout: '...' }  where fout is full path to output image
+  addWork(e, work) {
+    var pre = this.basesrc;
+    if (pre.charAt(pre.length - 1) == '/') {
+      console.log('Expected not to have a trailing slash! '+pre);
+      process.exit(1);
+    }
+    pre = pre + '/';
+    var pub = this.baseout;
+    if (pub.charAt(pre.length - 1) == '/') {
+      console.log('Expected not to have a trailing slash! '+pub);
+      process.exit(1);
+    }
+    pub = pub + '';
+    const out1 = pub+"/160."+e;
+    //work.push({fout:out1, args: pre + e + " -auto-orient [160x90] -thumbnail 160x90 -background #404044 -sharpen 1 -gravity Center -extent 160x90 "+out1});
+    const out2 = pub+"/1920."+e;
+    //work.push({fout:out2, args: "-auto-orient -quality 83 -resize 1920x1080> -background #404044 -gravity Center -sharpen 1 -extent 1920x1080 "+pre+e+" "+out2});
+    for (const grav of 'c n s e w'.split(' ')) {
+      const out3 = pub+"/sq"+grav+"."+e;
+      work.push({fout:out3, args: pre + e + ' -auto-orient -resize 256x256^ -sharpen 1 -gravity '+gravD[grav]+' -crop 256x256+0+0 '+out3});
+      const out4 = pub+"/sq"+grav+"."+e+'.png'
+      work.push({fout:out4, args: pre + e + ' -auto-orient -resize 4x4^ -sharpen 1 -gravity '+gravD[grav]+' -crop 4x4+0+0 '+out4});
+    }
+  }
+
+  public convertThumbnails(numcores, allDone) {
+    var work = [];
     var files = fs.readdirSync(this.basesrc);
+    files.forEach((file) => {
+      if (! (file.toLowerCase().endsWith('.jpg') || file.toLowerCase().endsWith('.jpeg')) ) {
+        return; // only process thumbnails for JPG / JPEG / etc.
+      }
+      this.addWork(file, work);
+    });
+    //console.log(work);
+
     var dots = 0;
-    var count = 0;
-    async.forEachOfLimit(files, 32,
+    async.forEachOfLimit(work, numcores|0,
       // call this function once for each file
-      (val, index, cb) => {
-        if (! (val.toLowerCase().endsWith('.jpg') || val.toLowerCase().endsWith('.jpeg')) ) {
-          cb(null); // skipped a file; must track this!
-          return;
-        }
-        var ob = { fname: val, index: count }; // index != correct count since we skip .DS_STORE, etc. (frown)
-        count++;
-        this.state.list.push(ob);
-        this.state.bykey[val] = ob;
-        this.readOneJpegExif(val, ob, (err) => {
+      (task, index, cb) => {
+        this.convertOne(task.fout, task.args, (err) => {
           if (err) {
             console.error(err.message);
           }
-          var expectedDots = (index*100.0)/files.length;
+          var expectedDots = (index*100.0)/work.length;
           while (dots < expectedDots) {
             fs.writeSync(1, ".");
             dots++;
@@ -241,13 +347,10 @@ export default class Server {
         if (err) {
           console.error(err.message);
         }
-        fs.writeSync(2, "\nDONE READING METADATA\n");
+        fs.writeSync(2, "\nDONE MAKING THUMBNAILS\n");
         // done now, call the server side callback thing, saying we are done reading all metadata
-        callback();
+        allDone();
      });
-    fs.writeSync(2, "Just called async.eachOfLimit on "+files.length+" files\n");
   }
 
 }
-
-// TODO use cmd at some point, esp. if we do the image magick convert calls from Node.js instead of Python

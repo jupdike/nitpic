@@ -22,6 +22,9 @@ function getAppDataPath() {
 	}
 }
 
+const numcpus = os.cpus().length;
+const numcores = (numcpus*0.75)|0
+
 var settings: NitpicSettings;
 var server: Server;
 
@@ -29,7 +32,8 @@ function createWindow() {
   var datapath = path.join(getAppDataPath(), 'Nitpic', 'Settings');
   settings = new NitpicSettings(datapath);
 
-  console.log("OS says it has this many cores: "+os.cpus().length); // could be 2x physical cores, because of hyper-threading
+  console.log("OS says it has this many cores : "+numcpus); // could be 2x physical cores, because of hyper-threading
+  console.log("OS probably has this many cores: "+numcores);
 
   server = new Server("ignored", path.join(settings.inputRootDir(), settings.albumName()),
     path.join(settings.outputRootDir(), settings.albumName()));
@@ -78,7 +82,9 @@ function readMetadataAndNavigate() {
 
 ipc.on('index-page-loaded', (event) => {
   console.error('index page loaded!');
-  readMetadataAndNavigate();
+  server.convertThumbnails(numcores, () => {
+    readMetadataAndNavigate();
+  });
 });
 
 // This method will be called when Electron has finished
