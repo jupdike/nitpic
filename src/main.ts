@@ -38,11 +38,12 @@ function createWindow() {
   console.log("OS says it has this many cores : "+numcpus); // could be 2x physical cores, because of hyper-threading
   console.log("OS probably has this many cores: "+numcores);
 
-  server = new Server("ignored", path.join(settings.inputRootDir(), settings.albumName()),
+  server = new Server(ipc_send, path.join(settings.inputRootDir(), settings.albumName()),
     path.join(settings.outputRootDir(), settings.albumName()), path.join(__dirname, default_watermark));
 
   // Create the browser window.
-  win = new BrowserWindow({width: 1150, height: 800})
+  win = new BrowserWindow({width: 1160, height: 800})
+  win.setMinimumSize(1160, 600);
 
   // Emitted when the window is closed.
   win.on('closed', () => {
@@ -52,47 +53,36 @@ function createWindow() {
     win = null
   })
 
-  // and load the index.html of the app.
   win.loadURL(url.format({
     pathname: path.join(__dirname, 'client', 'edit.html'),
     protocol: 'file:',
     slashes: true
   }))
-  // Open the DevTools.
-  win.webContents.openDevTools()
+  //win.webContents.openDevTools()
 }
 
 // this doesn't exist because there may be more than one window but there is always only one main process for the renderer (browser window) processes to talk to
 // but they don't say that in the docs, which is asinine
-function ipc_send(msg) {
-  win.webContents.send(msg);
+function ipc_send(msg, ...args) {
+  win.webContents.send(msg, ...args); // WTF dumb-asses --- violates the principal of least surprise
 }
 
 function readMetadataAndNavigate() {
   server.readMetadata( () => {
-
-    ipc_send('metadata-read'); // WTF dumb-asses --- violates the principal of least surprise
-    // load edit.html when metadata finishes loading
-    // win.loadURL(url.format({
-    //   pathname: path.join(__dirname, 'client', 'edit.html'),
-    //   protocol: 'file:',
-    //   slashes: true
-    // }))
-
-    // win.webContents.openDevTools()
+    ipc_send("progress-update", {progress: 0, message: "Ready"});
+    ipc_send('metadata-read');
   });
 }
 
 ipc.on('index-page-loaded', (event) => {
   console.error('index page loaded!');
+  ipc_send("progress-update", {progress: 0, message: "Ready"});
+  ipc_send("progress-update", {folderName: settings.albumName()});
   server.convertThumbnails(numcores, () => {
     readMetadataAndNavigate();
   });
 });
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.on('ready', createWindow)
 
 // Quit when all windows are closed.

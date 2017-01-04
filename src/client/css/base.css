@@ -175,6 +175,7 @@ ul {
 .center {
   text-align: center;
   display: inline-block;
+  min-width: 9rem;
   margin: 0;
   padding: 0;
 }
@@ -250,5 +251,4 @@ ul {
   height: 2rem;
   margin-top: 0.2rem;
   margin-bottom: 0;
-  background-color: red;  
 }

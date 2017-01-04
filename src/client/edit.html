@@ -23,9 +23,13 @@
           <div class="small-guy" id="album-cover">&nbsp;</div>
           <div class="center">
             <span id="folder-name" class="message">Current Folder Name</span><br/>
-            <span id="task" class="message" style="display: none">Message</span>
+            <span id="task" class="message" style="color: #888">Message</span>
           </div>
-          <div class="small-guy" id="pie">&nbsp;</div>
+          <div class="small-guy" id="pie">
+            <svg style="width:1.9rem; height:1.9rem">
+              <path id="arc1" transform="scale(1.5),translate(-4,-4)" style="stroke:#008; stroke-width:1.3px; fill:none" id="gear-icon" d="M 18 6  A 7 7 0 0 0  2 14"/>
+            </svg>
+          </div>
         </div>
         <div class="toolbar-right">
           <div class="button" id="preview">Preview</div>
@@ -49,8 +53,27 @@
     <script>
       const ipc = require('electron').ipcRenderer;
       ipc.send('index-page-loaded');
+      var lastAngle = 0;
+      ipc.on('progress-update', (event, arg) => {
+        if (arg.folderName) {
+          $("#folder-name").html(arg.folderName);
+        } else {
+          $("#task").html(arg.message);
+          
+          var angle = 360.0 * arg.progress / 100.0;
+          $("#arc1").css("display", angle > 0 ? "block" : "none");
+          if (angle <= 0) {
+            lastAngle = 0;
+          } else {
+            if (angle > lastAngle) {
+              $("#arc1").attr("d", RenderSide.RenderClass.describeArc(15,15, 7, 0,angle));
+              lastAngle = angle;
+            }
+          }
+        }
+      });
       ipc.on('metadata-read', (event, arg) => {
-        console.log("call FirstTimeRender");
+        console.log("call RenderEditAlbum");
         RenderSide.RenderClass.RenderEditAlbum('/api/pics', 'content');
       });
     </script>

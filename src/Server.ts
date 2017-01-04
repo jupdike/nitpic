@@ -8,18 +8,6 @@ const async = require('async')
 var pngparse = require("pngparse")
 import MyCode from './client/scripts/mycode'
 
-// TODO delete all this
-// NOW JUST RUN THIS:
-//   node server.js server /Users/jupdike/Dropbox/jfu-54-hd /Users/jupdike/Dropbox/Public/gallery
-/*if (process.argv.length < 5) {
-  console.log("Expected\n\t"+process.argv[0]+" "+process.argv[1]+" cmd src dst");
-  process.exit();
-}
-cmd = process.argv[2];
-basesrc = process.argv[3];
-baseout = process.argv[4];
-*/
-
 const exiv2 = "/Users/jupdike/exiv2" // TODO need a way to package this in Electron bundle and reference it
 //const convert = "/bin/echo" // just for hack / testing
 const convert = "/usr/local/bin/convert" // ditto
@@ -143,6 +131,7 @@ export default class Server {
             fs.writeSync(1, ".");
             dots++;
           }
+          this.ipc_send("progress-update", {progress: expectedDots|0, message: "Reading Metadata"});
           process.nextTick(function() { cb(err); });
         });
       },
@@ -163,7 +152,7 @@ export default class Server {
   state = { list: [], bykey: {}, index: 0, key: 0 }
   sapp = express();
 
-  constructor(public cmd: string, public basesrc: string, public baseout: string, public watermark: string) {
+  constructor(public ipc_send: any,  public basesrc: string, public baseout: string, public watermark: string) {
     try {
       fs.mkdirSync(baseout); // it's ok if it exists
     }
@@ -253,11 +242,9 @@ export default class Server {
 
     });
 
-    //if (this.cmd === 'server') {
-      this.sapp.listen(this.sapp.get('port'), () => {
-        console.log('Server started: http://localhost:' + this.sapp.get('port') + '/');
-      });
-    //}
+    this.sapp.listen(this.sapp.get('port'), () => {
+      console.log('Server started: http://localhost:' + this.sapp.get('port') + '/');
+    });
 
   }
 
@@ -307,7 +294,7 @@ export default class Server {
       console.log('Expected not to have a trailing slash! '+pub);
       process.exit(1);
     }
-    const watermarkCmd = this.watermark ? " -gravity SouthWest "+this.watermark+" -compose Over -composite " : " ";
+    const watermarkCmd = this.watermark ? " -gravity South "+this.watermark+" -compose Over -composite " : " ";
     pub = pub + '';
     const out1 = pub+"/160."+e;
     // note no space between pre+e+"[160x90]" -- add a space on pain of death!
@@ -346,6 +333,7 @@ export default class Server {
             fs.writeSync(1, ".");
             dots++;
           }
+          this.ipc_send("progress-update", {progress: expectedDots|0, message: "Thumbnails"});
           process.nextTick(function() { cb(null); });
         });
       },

@@ -18,6 +18,9 @@ function String_startswith(that, test): boolean {
 
 export default class NitpicSettings {
   settings: any = {};
+  getSettingsFile() {
+    return path.join(this.datapath, 'nitpic.json');
+  }
   constructor(public datapath: string) {
     try {
       fs.mkdirSync(datapath); // it's ok if it exists
@@ -25,7 +28,7 @@ export default class NitpicSettings {
     catch (e) {
     }
 
-    let settingsFile = path.join(this.datapath, 'nitpic.json');
+    let settingsFile = this.getSettingsFile();
     console.error("Settings file should be here: " + settingsFile);
     this.settings = { }
     try {
@@ -55,6 +58,19 @@ export default class NitpicSettings {
       }
     });
 
+    //this.openFolder();
+    this.saveSettings();
+  }
+
+  public saveSettings() {
+    let settingsFile = this.getSettingsFile();
+    var all = JSON.stringify(this.settings, null, 2);
+    fs.writeFileSync(settingsFile, all);
+    console.error('wrote:');
+    console.error(all);
+  }
+
+  public openFolder() {
     var files: Array<string> = this.chooseDir('albumName', this.inputRootDir());
     if (files && files.length > 0) {
       console.error(files);
@@ -68,13 +84,7 @@ export default class NitpicSettings {
       }
       this.settings['albumName'] = name;
     }
-
-    var all = JSON.stringify(this.settings, null, 2);
-    fs.writeFileSync(settingsFile, all);
-    console.error('wrote:');
-    console.error(all);
   }
-
   inputRootDir(): string {
     return this.settings.inputRootDir as string;
   }
