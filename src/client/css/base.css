@@ -172,8 +172,18 @@ ul {
   padding-right: 1rem;
 }
 
+.center {
+  text-align: center;
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+}
+
 .message {
   cursor: default;
+  font-size: 75%;
+  padding: 0;
+  margin: 0;
 }
 
 .button {
@@ -226,19 +236,19 @@ ul {
 }
 
 #album-cover {
-  vertical-align: middle;
+  vertical-align: top;
   width: 2rem;
   height: 2rem;
-  margin-top: 0;
+  margin-top: 0.2rem;
   margin-bottom: 0;
   background-color: orange;
 }
 
 #pie {
-  vertical-align: middle;
+  vertical-align: top;
   width: 2rem;
   height: 2rem;
-  margin-top: 0;
+  margin-top: 0.2rem;
   margin-bottom: 0;
   background-color: red;  
 }
