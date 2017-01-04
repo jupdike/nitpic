@@ -42,7 +42,7 @@ function createWindow() {
     path.join(settings.outputRootDir(), settings.albumName()), path.join(__dirname, default_watermark));
 
   // Create the browser window.
-  win = new BrowserWindow({width: 800, height: 600})
+  win = new BrowserWindow({width: 1150, height: 800})
 
   // Emitted when the window is closed.
   win.on('closed', () => {

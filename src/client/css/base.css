@@ -5,6 +5,7 @@ body {
   /*line-height: 1.7;*/
   margin: 0;
   padding: 0;
+  -webkit-text-size-adjust: 100%;
 }
 
 a {
@@ -14,16 +15,6 @@ a {
 
 a:hover {
   text-decoration: underline;
-}
-
-code {
-  background-color: #f8f8f8;
-  border: 1px solid #ddd;
-  border-radius: 3px;
-  font-family: "Bitstream Vera Sans Mono", Consolas, Courier, monospace;
-  font-size: 12px;
-  margin: 0 2px;
-  padding: 0 5px;
 }
 
 h1, h2, h3, h4 {
@@ -146,4 +137,108 @@ ul {
 }
 .thumb:hover .black {
   display: inline-block;
+}
+
+/* toolbar */
+
+.toolbar {
+  width: 100%;
+  border-bottom: 1px black solid;
+  height: 4rem;
+  background: white;
+}
+.contents {
+  padding-top: 4rem;
+}
+
+.toolbar {
+  z-index: 100;
+  position: fixed;
+  top: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.toolbar-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.toolbar-left,
+.toolbar-right,
+.toolbar-center {
+  padding-top: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.message {
+  cursor: default;
+}
+
+.button {
+  font-family: -apple-system, "Helvetica Neue", Arial;
+  vertical-align: top;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  display: inline-block;
+  border: 2px solid #008;
+  color: #008;
+  border-radius: 4px;
+  margin-left: 0.4rem;
+  margin-right: 0.4rem;
+  cursor: default;
+}
+
+.button:hover {
+  border: 2px solid #ddf;
+  background-color: #008;
+  color: #fff;
+  cursor: default;
+}
+
+.small-guy {
+  display: inline-block;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  margin-left: 0.4rem;
+  margin-right: 0.4rem;
+}
+
+.button-tight {
+  padding: 0;
+  display: inline-block;
+  border: 2px solid #008;
+  color: #008;
+  border-radius: 4px;
+  margin-left: 0.4rem;
+  margin-right: 0.4rem;
+  cursor: default;
+}
+
+.button-tight:hover {
+  border: 2px solid #ddf;
+  background-color: #008;
+  color: #fff;
+  cursor: default;
+}
+
+#album-cover {
+  vertical-align: middle;
+  width: 2rem;
+  height: 2rem;
+  margin-top: 0;
+  margin-bottom: 0;
+  background-color: orange;
+}
+
+#pie {
+  vertical-align: middle;
+  width: 2rem;
+  height: 2rem;
+  margin-top: 0;
+  margin-bottom: 0;
+  background-color: red;  
 }
