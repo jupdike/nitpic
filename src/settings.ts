@@ -26,7 +26,7 @@ export default class NitpicSettings {
     }
 
     let settingsFile = path.join(this.datapath, 'nitpic.json');
-    console.error("settings file should be here: " + settingsFile);
+    console.error("Settings file should be here: " + settingsFile);
     this.settings = { }
     try {
       let s = fs.readFileSync(settingsFile);

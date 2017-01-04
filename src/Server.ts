@@ -174,6 +174,10 @@ export default class Server {
   }
 
   init() {
+    if (this.baseout == this.basesrc) {
+      throw "Expected different input images folder and output images folder";
+    }
+
     this.sapp.set('port', (process.env.PORT || 3000));
     console.log('serving on port: ' + (process.env.PORT || 3000));
 
