@@ -16,12 +16,10 @@ class Hello extends React.Component<HelloProps, undefined> {
 */
 
 export class RenderClass {
-  public static FirstTimeRender() {
+  public static RenderEditAlbum(url, contentDivId) {
     ReactDOM.render(
-      //<Hello compiler="TypeScript" framework="React" />,
-      //React.createElement(Album, { url: "/api/pics" }),
-      <Album url="/api/pics"/>,
-      document.getElementById('content')
+      <Album url={url}/>,
+      document.getElementById(contentDivId)
     );
   }
 }
