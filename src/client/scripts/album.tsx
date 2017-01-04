@@ -52,9 +52,9 @@ class Pic extends React.Component<PicProps, PicState> {
   handleCaptionDone(key, arg) {
     var newObj = null;
     if (key === 'title') {
-      newObj = { title: arg, fname: this.state.fname, desc: this.state.desc };
+      newObj = { title: arg, fname: this.state.fname, desc: this.state.desc ? this.state.desc : "g=c" }; // don't write out  undefined -> 'undefined'
     } else if (key === 'desc') {
-      newObj = { title: this.state.title, fname: this.state.fname, desc: arg };
+      newObj = { title: this.state.title ? this.state.title : "", fname: this.state.fname, desc: arg };
     }
     // send this to the Model (on the server)
     MyCode.ajaxPostHelper('/api/pics', newObj,
@@ -66,8 +66,8 @@ class Pic extends React.Component<PicProps, PicState> {
     return (
       <div className="pic">
         <img src={MyCode.makethumburl(this.state.fname, this.state.desc)} />
-        <Caption initValue={this.state.title} onDone={(arg) => this.handleCaptionDone('title', arg)} />
-        <Caption initValue={this.state.desc} onDone={(arg) => this.handleCaptionDone('desc', arg)} />
+        <Caption initValue={this.state.title ? this.state.title : ""} onDone={(arg) => this.handleCaptionDone('title', arg)} />
+        <Caption initValue={this.state.desc ? this.state.desc : "g=c"} onDone={(arg) => this.handleCaptionDone('desc', arg)} />
       </div>
     );
   }
@@ -86,6 +86,10 @@ class Caption extends React.Component<CaptionProps, CaptionState> {
   constructor(props: CaptionProps) {
     super(props);
     this.state = { editing: false, val: this.props.initValue };
+    this.handleClick = this.handleClick.bind(this);
+    this.handleTextChange = this.handleTextChange.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
   handleClick() {
     this.setState({editing: true, val: this.state.val});
@@ -119,7 +123,7 @@ class Caption extends React.Component<CaptionProps, CaptionState> {
       );
     else
       return (
-        <div className="pic-cap" onClick={this.handleClick}>{this.state.val}</div>
+        <div className="pic-cap" onClick={this.handleClick}>{(this.state.val && this.state.val != '') ? this.state.val : "Click to edit"}</div>
       );
   }
 }
