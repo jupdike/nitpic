@@ -143,7 +143,7 @@ export default class Server {
             fs.writeSync(1, ".");
             dots++;
           }
-          cb(err);
+          process.nextTick(function() { cb(err); });
         });
       },
       // done
@@ -340,7 +340,7 @@ export default class Server {
             fs.writeSync(1, ".");
             dots++;
           }
-          cb(err);
+          process.nextTick(function() { cb(null); });
         });
       },
       // done
