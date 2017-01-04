@@ -14,16 +14,19 @@ let win
 
 // on Mac this is /Users/jupdike/Library/Application Support/nitpic/Settings/
 function getAppDataPath() {
-	switch (process.platform) {
-		case 'win32': return process.env['APPDATA'] || path.join(process.env['USERPROFILE'], 'AppData', 'Roaming');
-		case 'darwin': return path.join(os.homedir(), 'Library', 'Application Support');
-		case 'linux': return process.env['XDG_CONFIG_HOME'] || path.join(os.homedir(), '.config');
-		default: throw new Error('Platform not supported');
-	}
+  switch (process.platform) {
+    case 'win32': return process.env['APPDATA'] || path.join(process.env['USERPROFILE'], 'AppData', 'Roaming');
+    case 'darwin': return path.join(os.homedir(), 'Library', 'Application Support');
+    case 'linux': return process.env['XDG_CONFIG_HOME'] || path.join(os.homedir(), '.config');
+    default: throw new Error('Platform not supported');
+  }
 }
 
 const numcpus = os.cpus().length;
-const numcores = (numcpus*0.75)|0
+const numcores = (numcpus*0.75)|0;
+
+// TODO: change this to allow user to set this and store in NitpicSettings (along with -gravity of Center, N,S,E,W, NW, SW, NE, SE)
+const default_watermark = 'jared-updike-org-mark.png';
 
 var settings: NitpicSettings;
 var server: Server;
@@ -36,7 +39,7 @@ function createWindow() {
   console.log("OS probably has this many cores: "+numcores);
 
   server = new Server("ignored", path.join(settings.inputRootDir(), settings.albumName()),
-    path.join(settings.outputRootDir(), settings.albumName()));
+    path.join(settings.outputRootDir(), settings.albumName()), path.join(__dirname, default_watermark));
 
   // Create the browser window.
   win = new BrowserWindow({width: 800, height: 600})
