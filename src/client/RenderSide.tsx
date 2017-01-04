@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { Album } from "./scripts/album";
+import { Album } from "./scripts/Album";
 
 /*
 interface HelloProps {

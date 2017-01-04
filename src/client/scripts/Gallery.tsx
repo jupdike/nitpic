@@ -1,4 +1,4 @@
-import MyCode from './mycode'
+import MyCode from './Shared'
 import React = require("react");
 import TypedReact = require("typed-react");
 

@@ -6,7 +6,7 @@ const ipc = require('electron').ipcMain
 const os = require('os');
 
 import Server from './Server'
-import NitpicSettings from './settings'
+import NitpicSettings from './NitpicSettings'
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.

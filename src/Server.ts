@@ -6,7 +6,7 @@ const split = require('split')
 const {execFile} = require('child_process')
 const async = require('async')
 var pngparse = require("pngparse")
-import MyCode from './client/scripts/mycode'
+import Shared from './client/scripts/Shared'
 
 const exiv2 = "/Users/jupdike/exiv2" // TODO need a way to package this in Electron bundle and reference it
 //const convert = "/bin/echo" // just for hack / testing
@@ -66,7 +66,7 @@ export default class Server {
   set4x4PixelString(ob) {
     var fname = ob.fname;
     var desc = ob.desc || "g=c";
-    var grav = MyCode.getField(desc, 'g', 'c');
+    var grav = Shared.getField(desc, 'g', 'c');
     var f = this.baseout + '/sq' + grav + "." + fname + '.png';
     this.get4x4Pixels(f, (result) => {
       //console.log(f +': '+ result);

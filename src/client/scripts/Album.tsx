@@ -1,7 +1,7 @@
 /// <reference path="/Users/jupdike/Documents/dev/nitpic/node_modules/@types/jquery/index.d.ts" />
 /// <reference path="/Users/jupdike/Documents/dev/nitpic/node_modules/@types/react/index.d.ts" />
 
-import MyCode from './mycode'
+import MyCode from './Shared'
 import React = require("react");
 
 export interface AlbumProps {

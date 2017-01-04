@@ -1,4 +1,4 @@
-export default class MyCode {
+export default class Shared {
 
   public static getField(desc, key, defaulty) {
     var ret = defaulty;
@@ -19,15 +19,15 @@ export default class MyCode {
 
   public static makethumburl(fname, desc) {
     desc = desc || "g=c";
-    var grav = MyCode.getField(desc, "g", "c");
-    return MyCode.HOST + "/thumbs" + "/sq" + grav + "." + fname;
+    var grav = Shared.getField(desc, "g", "c");
+    return Shared.HOST + "/thumbs" + "/sq" + grav + "." + fname;
   }
 
   public static HOST = "http://localhost:3000"
 
   public static ajaxGetHelper(url, success) {
     $.ajax({
-      url: MyCode.HOST + url,
+      url: Shared.HOST + url,
       dataType: 'json',
       cache: false,
       success: success,
@@ -39,7 +39,7 @@ export default class MyCode {
 
   public static ajaxPostHelper(url, data, success) {
     $.ajax({
-      url: MyCode.HOST + url,
+      url: Shared.HOST + url,
       dataType: 'json',
       type: 'POST',
       data: data,
