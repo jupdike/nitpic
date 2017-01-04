@@ -1,7 +1,7 @@
 module.exports = {
-  entry: "./src/client/index.tsx",
+  entry: "./src/client/RenderSide.tsx",
   output: {
-    library: "RenderMod",
+    library: "RenderSide",
     libraryTarget: "var",
     filename: "bundle.js",
     path: __dirname + "/build/client"

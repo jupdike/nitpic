@@ -23,7 +23,7 @@
       ipc.send('index-page-loaded');
       ipc.on('metadata-read', (event, arg) => {
         console.log("call FirstTimeRender");
-        RenderMod.RenderClass.FirstTimeRender();
+        RenderSide.RenderClass.FirstTimeRender();
       });
     </script>
 
