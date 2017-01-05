@@ -51,8 +51,12 @@
     <script src="./bundle.js"></script>
 
     <script>
+      $("#open-folder").click((event) => {
+        console.log("clicked Open Folder");
+        ipc.send('index-page-loaded', true); // DO ask user to pick an album
+      });
       const ipc = require('electron').ipcRenderer;
-      ipc.send('index-page-loaded');
+      ipc.send('index-page-loaded', false); // don't ask user to pick an album
       var lastAngle = 0;
       ipc.on('progress-update', (event, arg) => {
         if (arg.folderName) {
@@ -72,9 +76,11 @@
           }
         }
       });
+      key = 0;
       ipc.on('metadata-read', (event, arg) => {
-        console.log("call RenderEditAlbum");
-        RenderSide.RenderClass.RenderEditAlbum('/api/pics', 'content');
+        console.log('Metadata has finished being read');
+        key++;
+        RenderSide.RenderClass.RenderEditAlbum('/api/pics', key, 'content');
       });
     </script>
 

@@ -7,6 +7,7 @@ const {execFile} = require('child_process')
 const async = require('async')
 var pngparse = require("pngparse")
 import Shared from './client/scripts/Shared'
+import NitpicSettings from './NitpicSettings'
 
 const exiv2 = "/Users/jupdike/exiv2" // TODO need a way to package this in Electron bundle and reference it
 //const convert = "/bin/echo" // just for hack / testing
@@ -149,30 +150,34 @@ export default class Server {
 
   // constructor / init
 
-  state = { list: [], bykey: {}, index: 0, key: 0 }
+  state: any
   sapp = express();
 
-  constructor(public ipc_send: any,  public basesrc: string, public baseout: string, public watermark: string) {
-    try {
-      fs.mkdirSync(baseout); // it's ok if it exists
-    }
-      catch (e) {
-    }
+  baseout: string;
+  basesrc: string;
+  constructor(public ipc_send: any, public settings: NitpicSettings, public watermark: string) {
+    this.openFolder();
     this.init();
     //this.readMetadata(null);
   }
 
-  init() {
+  openFolder() {
+    this.basesrc = path.join(this.settings.inputRootDir(), this.settings.albumName());
+    this.baseout = path.join(this.settings.outputRootDir(), this.settings.albumName());
     if (this.baseout == this.basesrc) {
       throw "Expected different input images folder and output images folder";
     }
+    try {
+      fs.mkdirSync(this.baseout); // it's ok if it exists
+    }
+      catch (e) {
+    }
+    this.state = { list: [], bykey: {}, index: 0, key: 0 };
+  }
 
+  init() {
     this.sapp.set('port', (process.env.PORT || 3000));
     console.log('serving on port: ' + (process.env.PORT || 3000));
-
-    //this.sapp.use('/', express.static(path.join(__dirname, 'public')));
-
-    this.sapp.use('/thumbs/', express.static(this.baseout));
 
     this.sapp.use(bodyParser.json());
     this.sapp.use(bodyParser.urlencoded({extended: true}));
@@ -242,10 +247,16 @@ export default class Server {
 
     });
 
+    this.sapp.get('/thumbs/:filename', (req, res) => {
+      const fname = req.params.filename;
+      const full = path.join(this.baseout, fname);
+      //console.log('requested '+full);
+      res.sendFile(full);
+    });
+
     this.sapp.listen(this.sapp.get('port'), () => {
       console.log('Server started: http://localhost:' + this.sapp.get('port') + '/');
     });
-
   }
 
   // make thumbnails

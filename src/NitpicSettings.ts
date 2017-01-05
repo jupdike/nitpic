@@ -70,12 +70,26 @@ export default class NitpicSettings {
     console.error(all);
   }
 
-  public openFolder() {
+  public openFolder(): boolean {
+    var ret = false;
     var files: Array<string> = this.chooseDir('albumName', this.inputRootDir());
     if (files && files.length > 0) {
       console.error(files);
       var base = this.inputRootDir();
-      var name = files[0].replace(base, '');
+      var name = files[0];
+      console.log(name);
+      console.log(base);
+      if (!String_startswith(name, this.inputRootDir())) {
+        const options = {
+          type: 'info',
+          title: 'Must choose album inside input folder',
+          message: "Album folder needs to be inside of base input folder, " + this.inputRootDir(),
+          buttons: ['OK']
+        }
+        var indexUnused = dialog.showMessageBox(options);
+        return false;
+      }
+      name = name.replace(base, '');
       if (String_startswith(name, '/')) {
         name = name.slice(1);
       }
@@ -83,7 +97,9 @@ export default class NitpicSettings {
         name = name.slice(1);
       }
       this.settings['albumName'] = name;
+      ret = true;
     }
+    return ret;
   }
   inputRootDir(): string {
     return this.settings.inputRootDir as string;

@@ -38,8 +38,7 @@ function createWindow() {
   console.log("OS says it has this many cores : "+numcpus); // could be 2x physical cores, because of hyper-threading
   console.log("OS probably has this many cores: "+numcores);
 
-  server = new Server(ipc_send, path.join(settings.inputRootDir(), settings.albumName()),
-    path.join(settings.outputRootDir(), settings.albumName()), path.join(__dirname, default_watermark));
+  server = new Server(ipc_send, settings, path.join(__dirname, default_watermark));
 
   // Create the browser window.
   win = new BrowserWindow({width: 1160, height: 800})
@@ -58,7 +57,7 @@ function createWindow() {
     protocol: 'file:',
     slashes: true
   }))
-  //win.webContents.openDevTools()
+  win.webContents.openDevTools()
 }
 
 // this doesn't exist because there may be more than one window but there is always only one main process for the renderer (browser window) processes to talk to
@@ -67,19 +66,25 @@ function ipc_send(msg, ...args) {
   win.webContents.send(msg, ...args); // WTF dumb-asses --- violates the principal of least surprise
 }
 
-function readMetadataAndNavigate() {
-  server.readMetadata( () => {
-    ipc_send("progress-update", {progress: 0, message: "Ready"});
-    ipc_send('metadata-read');
-  });
-}
-
-ipc.on('index-page-loaded', (event) => {
+ipc.on('index-page-loaded', (event, requestUserPickFolder) => {
   console.error('index page loaded!');
+  console.error(requestUserPickFolder);
+  if (requestUserPickFolder) {
+    if (settings.openFolder()) {
+      settings.saveSettings();
+      server.openFolder(); // set the folder to the new setting
+    }
+    else {
+      return;
+    }
+  }
   ipc_send("progress-update", {progress: 0, message: "Ready"});
   ipc_send("progress-update", {folderName: settings.albumName()});
   server.convertThumbnails(numcores, () => {
-    readMetadataAndNavigate();
+    server.readMetadata( () => {
+      ipc_send("progress-update", {progress: 0, message: "Ready"});
+      ipc_send('metadata-read');
+    });
   });
 });
 
