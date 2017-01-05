@@ -5,6 +5,8 @@ const fs = require('fs')
 const ipc = require('electron').ipcMain
 const os = require('os');
 
+//app.setName("Nitpic"); // does nothing. TODO this should be in the Info.plist and we should use electron-packager
+
 import Server from './Server'
 import NitpicSettings from './NitpicSettings'
 
