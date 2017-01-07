@@ -38,7 +38,7 @@
       </div>
     </div><!-- toolbar -->
 
-    <div id="content" class="contents"></div>
+    <div id="content" class="edit-contents"></div>
     <!-- Dependencies -->
     <script src="./third-party/react.js"></script>
     <script src="./third-party/react-dom.js"></script>
@@ -51,6 +51,10 @@
     <script src="./bundle.js"></script>
 
     <script>
+      $("#preview").click((event) => {
+        console.log("clicked Preview");
+        ipc.send('show-preview');
+      });
       $("#open-folder").click((event) => {
         console.log("clicked Open Folder");
         ipc.send('index-page-loaded', true); // DO ask user to pick an album

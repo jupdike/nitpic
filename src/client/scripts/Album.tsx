@@ -10,7 +10,7 @@ export interface AlbumProps {
 export interface AlbumState {
   data: any
 }
-export class Album extends React.Component<AlbumProps, AlbumState> {
+export class EditAlbum extends React.Component<AlbumProps, AlbumState> {
   state: AlbumState = { data: { list: [], bykey: {} } }
   componentDidMount() {
     MyCode.ajaxGetHelper(this.props.url,

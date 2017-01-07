@@ -2,24 +2,25 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>JPEG EXIF/XMP Picture Captioner</title>
+    <title>Gallery Preview - Nitpic</title>
     <link rel="stylesheet" href="css/base.css" />
-    <script src="https://npmcdn.com/react@15.3.0/dist/react.js"></script>
-    <script src="https://npmcdn.com/react-dom@15.3.0/dist/react-dom.js"></script>
-    <script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>
-    <script src="https://npmcdn.com/jquery@3.1.0/dist/jquery.min.js"></script>
-    <script src="scripts/album.js" type="text/babel"></script>
-    <script src="scripts/gallery.js" type="text/babel"></script>
   </head>
   <body>
-    <div id="content"></div>
-    <script type="text/javascript">
-      setTimeout(function(){
-        ReactDOM.render(
-          React.createElement(Gallery.Thumbs, { url: "/api/pics" }),
-          document.getElementById('content')
-        );
-      }, 250);
+    <div id="content" class="contents"></div>
+    <!-- Dependencies -->
+    <script src="./third-party/react.js"></script>
+    <script src="./third-party/react-dom.js"></script>
+    <!-- script src="./third-party/jquery.js"></script -->
+    <script>
+      window.$ = window.jQuery = require('./third-party/jquery.js')
     </script>
+
+    <!-- Main -- Electron + Webpack = :-( -->
+    <script src="./bundle.js"></script>
+
+    <script>
+      RenderSide.RenderClass.RenderGalleryAlbum('/api/pics', 'content');
+    </script>
+
   </body>
 </html>

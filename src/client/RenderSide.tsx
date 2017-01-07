@@ -1,7 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { Album } from "./scripts/Album";
+import { EditAlbum } from "./scripts/Album";
+import { Thumbs } from "./scripts/Gallery";
 
 export class RenderClass {
   static polarToCartesian(centerX, centerY, radius, angleInDegrees) {
@@ -21,11 +22,17 @@ export class RenderClass {
     ].join(" ");
     return d;
   }
+  public static RenderGalleryAlbum(url, contentDivId) {
+    ReactDOM.render(
+      <Thumbs/>,
+      document.getElementById(contentDivId)
+    );
+  }
   public static RenderEditAlbum(url, key, contentDivId) {
     console.log("call RenderEditAlbum");
     //document.getElementById(contentDivId).innerHTML = "";
     ReactDOM.render(
-      <Album key={key} url={url}/>,
+      <EditAlbum key={key} url={url}/>,
       document.getElementById(contentDivId)
     );
   }

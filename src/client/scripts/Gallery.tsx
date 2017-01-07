@@ -1,15 +1,8 @@
-import MyCode from './Shared'
 import React = require("react");
 import TypedReact = require("typed-react");
+import Shared from './Shared'
 
-var Gallery = (function() {
-var makethumburl = MyCode.makethumburl;
-var ajaxGetHelper = MyCode.ajaxGetHelper;
-if (ajaxGetHelper) {
-  //console.log("found ajaxGetHelper");
-}
-
-var baseUrl = 'https://dl.dropboxusercontent.com/u/143480/gallery/';
+const baseUrl = Shared.HOST + '/thumbs';
 
 // create a reusable offscreen canvas
 var canvas = document.createElement("canvas");
@@ -17,43 +10,45 @@ var ctx = canvas.getContext("2d");
 canvas.width = 4;
 canvas.height = 4;
 
-function make4x4ImgUrl(str) {
-  var imgData = ctx.getImageData(0,0,4,4);
-  var data = imgData.data;
-  // convert 24 bit
-  for(var i = 0; i < data.length; i += 4){
-    var offset = ((i|0) / 4)|0;
-    offset *= 6
-    data[i+0] = parseInt(str.slice(offset+0, offset+2), 16);
-    data[i+1] = parseInt(str.slice(offset+2, offset+4), 16);
-    data[i+2] = parseInt(str.slice(offset+4, offset+6), 16);
-    data[i+3] = 255;
+class Gallery {
+  static make4x4ImgUrl(str) {
+    var imgData = ctx.getImageData(0,0,4,4);
+    var data = imgData.data;
+    // convert 24 bit
+    for(var i = 0; i < data.length; i += 4){
+      var offset = ((i|0) / 4)|0;
+      offset *= 6
+      data[i+0] = parseInt(str.slice(offset+0, offset+2), 16);
+      data[i+1] = parseInt(str.slice(offset+2, offset+4), 16);
+      data[i+2] = parseInt(str.slice(offset+4, offset+6), 16);
+      data[i+3] = 255;
+    }
+    ctx.putImageData(imgData, 0, 0);
+
+    // TODO could resample using custom kernel, deconvolve and make what appears to be a guassian blurred image
+    // as a 160x160 image
+
+    return canvas.toDataURL();
   }
-  ctx.putImageData(imgData, 0, 0);
 
-  // TODO could resample using custom kernel, deconvolve and make what appears to be a guassian blurred image
-  // as a 160x160 image
-
-  return canvas.toDataURL();
-}
-
-function make4x4BlackSquare(alpha) {
-  var imgData = ctx.getImageData(0,0,4,4);
-  var data = imgData.data;
-  // convert 24 bit
-  for(var i = 0; i < data.length; i += 4){
-    var offset = ((i|0) / 4)|0;
-    offset *= 6
-    data[i+0] = 0;
-    data[i+1] = 0;
-    data[i+2] = 0;
-    data[i+3] = alpha;
+  static make4x4BlackSquare(alpha) {
+    var imgData = ctx.getImageData(0,0,4,4);
+    var data = imgData.data;
+    // convert 24 bit
+    for(var i = 0; i < data.length; i += 4){
+      var offset = ((i|0) / 4)|0;
+      offset *= 6
+      data[i+0] = 0;
+      data[i+1] = 0;
+      data[i+2] = 0;
+      data[i+3] = alpha;
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return canvas.toDataURL();
   }
-  ctx.putImageData(imgData, 0, 0);
-  return canvas.toDataURL();
-}
 
-var blackSquare4x4Url = make4x4BlackSquare(48);
+  static blackSquare4x4Url = Gallery.make4x4BlackSquare(48);
+}
 
 var PrettyCaption: any = React.createClass({
   render: function() {
@@ -118,8 +113,8 @@ var Thumb: any = React.createClass({
     return{ title: this.props.title,
             desc: this.props.desc,
             fname: this.props.fname,
-            hex4x4url: make4x4ImgUrl(this.props.hex4x4),
-            thumburl: baseUrl + makethumburl(this.props.fname, this.props.desc).replace('/thumbs/', ''),
+            hex4x4url: Gallery.make4x4ImgUrl(this.props.hex4x4),
+            thumburl: Shared.makethumburl(this.props.fname, this.props.desc) //.replace('/thumbs/', ''),
           }
   },
   handleClick: function(event) {
@@ -135,7 +130,7 @@ var Thumb: any = React.createClass({
       backgroundRepeat: "no-repeat",
     };
     var styleBlack = {
-      backgroundImage: 'url("'+blackSquare4x4Url+'")',
+      backgroundImage: 'url("'+Gallery.blackSquare4x4Url+'")',
       backgroundSize: "160px 160px",
       backgroundRepeat: "no-repeat",
       width: "160px",
@@ -190,12 +185,12 @@ var Big: any = React.createClass({
   }
 });
 
-var Thumbs = React.createClass({
+export var Thumbs = React.createClass({
   getInitialState: function() {
     return { data: { list: [], bykey: {}, index: 0, key: 0 } };
   },
   componentDidMount: function() {
-    ajaxGetHelper(this.props.url,
+    Shared.ajaxGetHelper('/api/pics',  //this.props.url,    TODO also   url={url}
       (data) => {
         this.setState({ data: data });
       });
@@ -222,9 +217,3 @@ var Thumbs = React.createClass({
     );
   }
 });
-
-return {
-  Thumbs: Thumbs
-};
-
-})();

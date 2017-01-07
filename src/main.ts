@@ -90,6 +90,28 @@ ipc.on('index-page-loaded', (event, requestUserPickFolder) => {
   });
 });
 
+var windows = [];
+ipc.on('show-preview', (event) => {
+  console.log("main should show a preview window");
+
+  var newIndex = windows.length;
+  var wind = new BrowserWindow({width: 1160, height: 700})
+  wind.setMinimumSize(1160, 600);
+  windows.push(wind);
+
+  // Emitted when the window is closed.
+  wind.on('closed', () => {
+    windows[newIndex] = null; // null out the reference where the .push just added it (keep all the indices the same, however)
+  })
+
+  wind.loadURL(url.format({
+    pathname: path.join(__dirname, 'client', 'gallery.html'),
+    protocol: 'file:',
+    slashes: true
+  }))
+  wind.webContents.openDevTools()  
+});
+
 app.on('ready', createWindow)
 
 // Quit when all windows are closed.
