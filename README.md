@@ -18,7 +18,8 @@ so your relationship to the company is more clear, but it could be hard to migra
 service or even retrieve your data if you stop paying.
 
 So if you are going to have to export and import your data into new services every
-several years, why not import it into a future-proof, open format: files and folders!
+several years, and you need to keep a copy of all of your data as you go anyway, why not
+import it into a future-proof, open format: files and folders!
 
 If you know you want to own your data -- with a copy on your desktop/laptop,
 a physical backup (you *do* have a backup, right?), perhaps also backed up to the
@@ -34,7 +35,8 @@ then Nitpic may be for you.
 - **Uses standard EXIF headers** for Title and Description, readable and writable by other
 apps, for example, Apple Photos (macOS). But Nitpic is better for captioning than Photos because
 that app does not let you add a caption and export without recompressing your JPGs, whereas
-Nitpic uses the **exvi2** command-line tool to modify just the EXIF field(s)
+Nitpic uses the **exvi2** command-line tool to modify just the EXIF field(s) off the original file,
+in place.
 
 ### Modern, Responsive, High-Res, Retina-friendly
 
@@ -49,10 +51,11 @@ JSON, along with the image captions, so it loads really fast, all at once. Great
 large galleries.)
 - **You own and pay for your images to be published**. You pay Amazon (or Azure, or
 anything that can put buckets (folders corresponding to an album) of static files on the
-public internet.) I do not touch your data. You can change to use any service you like.
-(If you fork and get that working, I would love to know about it.)
+public internet.) I do not touch your data. You can switch to any service you like, any time
+you like. (If you fork Nitpic and get that working, I would love to know about it.)
 - **Independent image hosting**: host your blog or website on any service, and embed your
-galleries there using JavaScript, then host your images for cheap wherever that makes sense.
+galleries there using JavaScript, then host your images for cheap wherever that makes sense,
+whether it is the same service, or yet another service.
 - **Open source**: just fork Nitpic and make it do what you want, if it is not to your
 liking.
 
@@ -68,19 +71,20 @@ you can publish any (or none) of the output knowing your originals are separate.
 feature and those captions are saved *in the same file as the image data*, namely
 as standard EXIF JPG data. If you don't need the thumbnails, just delete the output
 folder when you are done; if you need to come back to the album and caption some more,
-or re-caption, this image data can just be regenerated.
+or re-caption, this thumbnail image data can just be regenerated, and quickly too,
+using as many cores as your machine supports.
 - **Gallery Creator**: lightweight, modern, embeddable galleries with just a few
 lines of JavaScript in your HTML (blog, etc.) or use the index.html generated for
 you, and go from there. Gallery CSS and JavaScript is free to modify and redistribute
-(BSD license).
+(BSD license), even for commericial purposes.
 - **Publisher**: sync an album at a time to an Amazon S3 bucket. Small changes are
 easier to re-sync (just metadata JSON file is re-uploaded, or only new images).
 
 ### Tell *Your* Stories
 
 Since your galleries are easily embeddable, you can put your images next to text and
-really tell your whole story. (Requires your own blog setup, say at NearlyFreeSpeech.net
-or any webhost.)
+really tell your whole story. (Requires your own blog setup, say at NearlyFreeSpeech.net,
+Github Pages (Github.io), or any webhost.)
 
 ### Anti-goals
 
@@ -92,8 +96,10 @@ solution. Nitpic is not a community of like-minded suckers handing over their be
 to a VC-backed company located in another country. Nitpic does not assume that it knows
 best. Nitpic seeks to be dispensible and replaceable.
 
-## Setup
+## Developer Setup
 
+- brew install imagemagick
+- brew install exiv2 (or from source... hmmm... double check this)
 - Execute npm install -- to get Electron, React, jQuery packages installed into node_modules
 - Execute ./build.sh to create build/ and compile .ts to .js files, etc.
 - Run ./run.sh to launch Electono app.
