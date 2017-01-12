@@ -50,8 +50,11 @@ class Gallery {
   static blackSquare4x4Url = Gallery.make4x4BlackSquare(48);
 }
 
-var PrettyCaption: any = React.createClass({
-  render: function() {
+interface PrettyCapProps {
+  title: string;
+}
+class PrettyCaption extends React.Component<PrettyCapProps, undefined> {
+  render() {
     var title = this.props.title || "";
     if (title.indexOf(":") > -1) {
       // TWO+ PIECES (use two of them)
@@ -105,8 +108,7 @@ var PrettyCaption: any = React.createClass({
       <div className="caption-top">{title}</div>
     );
   }
-
-});
+}
 
 var Thumb: any = React.createClass({
   getInitialState: function() {
