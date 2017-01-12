@@ -185,35 +185,52 @@ var Big: any = React.createClass({
   }
 });
 
-export var Thumbs = React.createClass({
-  getInitialState: function() {
-    return { data: { list: [], bykey: {}, index: 0, key: 0 } };
-  },
-  componentDidMount: function() {
+interface DataInner {
+  list: Array<any>;
+  bykey: any;
+  index: number;
+  key: number;
+}
+interface ThumbsProps {
+}
+interface ThumbsState {
+  data: DataInner;
+}
+export class Thumbs extends React.Component<ThumbsProps, ThumbsState> {
+  state: ThumbsState = { data: { list: [], bykey: {}, index: 0, key: 0 } }
+  constructor(props: ThumbsProps) {
+    super(props);
+    // this.state = { // use props if needed...
+    // }
+    this.handleSetIndex = this.handleSetIndex.bind(this); // such BS that this is necessary
+  }
+  componentDidMount() {
     Shared.ajaxGetHelper('/api/pics',  //this.props.url,    TODO also   url={url}
       (data) => {
+        // console.log("got data");
         this.setState({ data: data });
+        // console.log(this.state);
       });
-  },
-  handleSetIndex: function(index) {
+  }
+  handleSetIndex(index) {
     // modify 'key' every time we change the index so Big can re-render with new state (resets its smallLoaded to false)
     var data = {list: this.state.data.list, bykey: this.state.data.bykey, index: index,
       key: this.state.data.key + 1};
     this.setState({data: data});
-  },
-  // TODO Also change state data.index when user presses arrow keys or clicks navigation bits
-  render: function() {
+  }
+  render() {
     var thumbNodes = this.state.data.list.map((pic) => {
       return (
         <Thumb key={pic.fname} hex4x4={pic.hex4x4} index={pic.index}
              fname={pic.fname} desc={pic.desc} title={pic.title} onSetIndex={this.handleSetIndex}/>
       );
     });
+    // <div className="album" data={this.state.data}> ... </div>
     return (
-      <div className="album" data={this.state.data}>
+      <div className="album">
         <Big key={this.state.data.key} data={this.state.data} smallLoaded={false} />
         {thumbNodes}
       </div>
     );
   }
-});
+}
