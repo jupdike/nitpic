@@ -110,22 +110,34 @@ class PrettyCaption extends React.Component<PrettyCapProps, undefined> {
   }
 }
 
-var Thumb: any = React.createClass({
-  getInitialState: function() {
-    return{ title: this.props.title,
+interface ThumbProps {
+  title, desc, fname, hex4x4: string;
+  onSetIndex: any;
+  index: number;
+}
+interface ThumbState {
+  title, desc, fname, hex4x4url, thumburl: string;
+}
+class Thumb extends React.Component<ThumbProps, ThumbState> {
+  state: ThumbState;
+  constructor(props: ThumbProps) {
+    super(props);
+    this.state =
+          { title: this.props.title,
             desc: this.props.desc,
             fname: this.props.fname,
             hex4x4url: Gallery.make4x4ImgUrl(this.props.hex4x4),
             thumburl: Shared.makethumburl(this.props.fname, this.props.desc) //.replace('/thumbs/', ''),
           }
-  },
-  handleClick: function(event) {
+    this.handleClick = this.handleClick.bind(this);
+  }
+  handleClick(event) {
     //event.preventDefault();
     //var el = event.target;
     //console.log(el); // if actual thumbnail component / div needed
     this.props.onSetIndex(this.props.index);
-  },
-  render: function() {
+  }
+  render() {
     var styleBg = {
       backgroundImage: 'url("'+this.state.hex4x4url+'")',
       backgroundSize: "160px 160px",
@@ -153,7 +165,7 @@ var Thumb: any = React.createClass({
       </div>
     );
   }
-});
+}
 
 interface BigProps {
   data: DataInner;
