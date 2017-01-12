@@ -153,17 +153,27 @@ var Thumb: any = React.createClass({
   }
 });
 
-var Big: any = React.createClass({
-  getInitialState: function() {
-    return {smallLoaded: this.props.smallLoaded};
-  },
-  handleLoaded: function(e) {
+interface BigProps {
+  data: DataInner;
+  smallLoaded: boolean;
+}
+interface BigState {
+  smallLoaded: boolean;
+}
+class Big extends React.Component<BigProps, BigState> {
+  state: BigState;
+  constructor(props: BigProps) {
+    super(props);
+    this.state = { smallLoaded: this.props.smallLoaded }
+    this.handleLoaded = this.handleLoaded.bind(this);
+  }
+  handleLoaded(e) {
     if (this.state.smallLoaded) {
       return;
     }
     this.setState({smallLoaded: true});
-  },
-  render: function() {
+  }
+  render() {
     if (!this.props.data || this.props.data.index >= this.props.data.list.length) {
       return null;
     }
@@ -183,7 +193,7 @@ var Big: any = React.createClass({
       </div>
     );
   }
-});
+}
 
 interface DataInner {
   list: Array<any>;
