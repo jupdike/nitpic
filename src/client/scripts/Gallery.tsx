@@ -170,22 +170,28 @@ class Thumb extends React.Component<ThumbProps, ThumbState> {
 interface BigProps {
   data: DataInner;
   smallLoaded: boolean;
+  visible: boolean;
 }
 interface BigState {
   smallLoaded: boolean;
+  visible: boolean;
 }
-class Big extends React.Component<BigProps, BigState> {
+export class Big extends React.Component<BigProps, BigState> {
   state: BigState;
   constructor(props: BigProps) {
     super(props);
-    this.state = { smallLoaded: this.props.smallLoaded }
+    this.state = { smallLoaded: this.props.smallLoaded, visible: this.props.visible }
     this.handleLoaded = this.handleLoaded.bind(this);
+    this.handleCloseClick = this.handleCloseClick.bind(this);
   }
   handleLoaded(e) {
     if (this.state.smallLoaded) {
       return;
     }
-    this.setState({smallLoaded: true});
+    this.setState({smallLoaded: true, visible: this.state.visible});
+  }
+  handleCloseClick(e) {
+    this.setState({smallLoaded: this.state.smallLoaded, visible: false});
   }
   render() {
     if (!this.props.data || this.props.data.index >= this.props.data.list.length) {
@@ -201,8 +207,24 @@ class Big extends React.Component<BigProps, BigState> {
       backgroundSize: "96vw 54vw",
       backgroundRepeat: "no-repeat",
     };
+    var sob = {
+      display: this.state.visible ? "block" : "none"
+    };
+    var circleStyle = {
+      fill: "#444444"
+    }
+    var pathStyle = {
+      stroke: "#666666",
+      fill: "#666666"
+    }
     return (
-      <div className="big">
+      <div className="big over" style={sob}>
+        <div className="x" onClick={this.handleCloseClick}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" style={circleStyle} />
+            <path transform="translate(3,3),scale(0.75)" style={pathStyle} d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+          </svg>
+        </div>
         <img className="full" src={bigImg} onLoad={this.handleLoaded} />
       </div>
     );
@@ -218,10 +240,11 @@ interface DataInner {
 interface ThumbsProps {
 }
 interface ThumbsState {
+  visible: boolean;
   data: DataInner;
 }
 export class Thumbs extends React.Component<ThumbsProps, ThumbsState> {
-  state: ThumbsState = { data: { list: [], bykey: {}, index: 0, key: 0 } }
+  state: ThumbsState = { visible: false, data: { list: [], bykey: {}, index: 0, key: 0 } }
   constructor(props: ThumbsProps) {
     super(props);
     // this.state = { // use props if needed...
@@ -232,7 +255,7 @@ export class Thumbs extends React.Component<ThumbsProps, ThumbsState> {
     Shared.ajaxGetHelper('/api/pics',  //this.props.url,    TODO also   url={url}
       (data) => {
         // console.log("got data");
-        this.setState({ data: data });
+        this.setState({ visible: this.state.visible, data: data });
         // console.log(this.state);
       });
   }
@@ -240,7 +263,8 @@ export class Thumbs extends React.Component<ThumbsProps, ThumbsState> {
     // modify 'key' every time we change the index so Big can re-render with new state (resets its smallLoaded to false)
     var data = {list: this.state.data.list, bykey: this.state.data.bykey, index: index,
       key: this.state.data.key + 1};
-    this.setState({data: data});
+    // make visible when a thing gets clicked
+    this.setState({visible: true, data: data});
   }
   render() {
     var thumbNodes = this.state.data.list.map((pic) => {
@@ -252,7 +276,7 @@ export class Thumbs extends React.Component<ThumbsProps, ThumbsState> {
     // <div className="album" data={this.state.data}> ... </div>
     return (
       <div className="album">
-        <Big key={this.state.data.key} data={this.state.data} smallLoaded={false} />
+        <Big visible={this.state.visible} key={this.state.data.key} data={this.state.data} smallLoaded={false} />
         {thumbNodes}
       </div>
     );

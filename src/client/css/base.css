@@ -118,6 +118,17 @@ ul {
   height: 54vw;
 }
 
+.over {
+  z-index: 100;
+  position: fixed;
+  top: 0;
+}
+
+.x {
+  width: 6vw;
+  height: 6vw;
+}
+
 .big img.full {
   width: 100%;
   height: auto;
