@@ -167,41 +167,90 @@ class Thumb extends React.Component<ThumbProps, ThumbState> {
   }
 }
 
+var circleStyle = {
+  fill: "#444444"
+}
+var pathStyle = {
+  stroke: "#666666",
+  fill: "#666666"
+}
+var pathStyle2 = {
+  stroke: "#555555",
+  fill: "#555555"
+}
+var playSvg = <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" style={circleStyle} />
+                <path transform="translate(1.8, 1.8),scale(0.85)" style={pathStyle2} d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+              </svg>
+var pauseSvg = <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" style={circleStyle} />
+                <path transform="translate(1.8, 1.8),scale(0.85)" style={pathStyle2} d="M9 16h2V8H9v8zm3-14C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm1-4h2V8h-2v8z"/>
+              </svg>
+
 interface BigProps {
-  data: DataInner;
   smallLoaded: boolean;
   visible: boolean;
+  data: DataInner;
 }
 interface BigState {
   smallLoaded: boolean;
   visible: boolean;
   data: DataInner;
+  playing: boolean;
 }
+// TODO arrow keys left and right, space to toggle play/pause, escape to close
 export class Big extends React.Component<BigProps, BigState> {
   state: BigState;
   constructor(props: BigProps) {
     super(props);
-    this.state = { smallLoaded: this.props.smallLoaded, visible: this.props.visible, data: this.props.data }
+    this.state = { smallLoaded: this.props.smallLoaded, visible: this.props.visible, data: this.props.data,
+      playing: false };
     this.handleLoaded = this.handleLoaded.bind(this);
     this.handleCloseClick = this.handleCloseClick.bind(this);
     this.handlePrevClick = this.handlePrevClick.bind(this);
     this.handleNextClick = this.handleNextClick.bind(this);
+    this.handlePlayPauseClick = this.handlePlayPauseClick.bind(this);
   }
   handleLoaded(e) {
     if (this.state.smallLoaded) {
       return;
     }
-    this.setState({smallLoaded: true, visible: this.state.visible, data: this.state.data});
+    this.setState({smallLoaded: true, visible: this.state.visible, data: this.state.data, playing: this.state.playing});
+  }
+  handlePlayPauseClick(e) {
+    console.log('playing', this.state.playing);
+
+    console.log('set state');
+    var newPlaying = true;
+    if (this.state.playing) {
+      newPlaying = false;
+    }
+    this.setState({smallLoaded: this.state.smallLoaded, visible: this.state.visible, data: this.state.data, playing: newPlaying});
+    
+    console.log('playing', newPlaying);
+    this.addOneNextClick(newPlaying);
+  }
+  addOneNextClick(newPlaying) {
+    if (newPlaying) {
+      console.log('set timeout');
+      window.setTimeout(() => {
+        if (this.state.playing) {
+          console.log('clicking next for you!');
+          this.handleNextClick(null);
+          this.addOneNextClick(this.state.playing);
+        }
+      }, 3000);
+    }
   }
   handleCloseClick(e) {
-    this.setState({smallLoaded: this.state.smallLoaded, visible: false, data: this.state.data});
+    this.setState({smallLoaded: this.state.smallLoaded, visible: false, data: this.state.data, playing: false});
   }
   handlePrevClick(e) {
     var newIndex = this.state.data.index - 1;
     if (newIndex < 0) {
       newIndex = this.state.data.list.length - 1;
     }
-    this.setState({smallLoaded: false, visible: this.state.visible,
+    this.setState({smallLoaded: false, visible: this.state.visible, playing: false,
       data: { list: this.state.data.list, bykey: this.state.data.bykey, index: newIndex, key: this.state.data.key } });
   }
   handleNextClick(e) {
@@ -209,8 +258,9 @@ export class Big extends React.Component<BigProps, BigState> {
     if (newIndex > this.state.data.list.length - 1) {
       newIndex = 0;
     }
-    this.setState({smallLoaded: false, visible: this.state.visible,
+    this.setState({smallLoaded: false, visible: this.state.visible, playing: this.state.playing,
       data: { list: this.state.data.list, bykey: this.state.data.bykey, index: newIndex, key: this.state.data.key } });
+    console.log('playing', this.state.playing);
   }
   render() {
     if (!this.state.data || this.state.data.index >= this.state.data.list.length) {
@@ -230,17 +280,6 @@ export class Big extends React.Component<BigProps, BigState> {
     var sob = {
       display: this.state.visible ? "block" : "none"
     };
-    var circleStyle = {
-      fill: "#444444"
-    }
-    var pathStyle = {
-      stroke: "#666666",
-      fill: "#666666"
-    }
-    var pathStyle2 = {
-      stroke: "#555555",
-      fill: "#555555"
-    }
     var title1 = "";
     var title2 = "";
     if (info.title.indexOf(": ") > -1) {
@@ -274,11 +313,8 @@ export class Big extends React.Component<BigProps, BigState> {
               </svg>
             </div>
 
-            <div className="targets playpause">
-              <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" style={circleStyle} />
-                <path transform="translate(1.8, 1.8),scale(0.85)" style={pathStyle2} d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
-              </svg>
+            <div className="targets playpause" onClick={this.handlePlayPauseClick}>
+              {this.state.playing ? pauseSvg : playSvg}
             </div>
 
             <div className="targets next" onClick={this.handleNextClick}>
