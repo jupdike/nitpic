@@ -237,6 +237,10 @@ export class Big extends React.Component<BigProps, BigState> {
       stroke: "#666666",
       fill: "#666666"
     }
+    var pathStyle2 = {
+      stroke: "#555555",
+      fill: "#555555"
+    }
     var title1 = "";
     var title2 = "";
     if (info.title.indexOf(": ") > -1) {
@@ -266,21 +270,21 @@ export class Big extends React.Component<BigProps, BigState> {
             <div className="targets prev" onClick={this.handlePrevClick}>
               <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="10" style={circleStyle} />
-                <path transform="translate(2,2),scale(0.85)" style={pathStyle} d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z"/>
+                <path transform="translate(1.8, 1.8),scale(0.85)" style={pathStyle} d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z"/>
               </svg>
             </div>
 
             <div className="targets playpause">
               <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="10" style={circleStyle} />
-                <path transform="translate(2,2),scale(0.85)" style={pathStyle} d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                <path transform="translate(1.8, 1.8),scale(0.85)" style={pathStyle2} d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
               </svg>
             </div>
 
             <div className="targets next" onClick={this.handleNextClick}>
               <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="10" style={circleStyle} />
-                <path transform="translate(2,2),scale(0.85)" style={pathStyle} d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"/>
+                <path transform="translate(1.8, 1.8),scale(0.85)" style={pathStyle} d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"/>
               </svg>
             </div>
 
