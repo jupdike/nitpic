@@ -220,7 +220,7 @@ export class Big extends React.Component<BigProps, BigState> {
     }
     var title1 = "";
     var title2 = "";
-    if (info.title.indexOf(": ")) {
+    if (info.title.indexOf(": ") > -1) {
       var ix = info.title.indexOf(": ");
       title1 = info.title.slice(ix + 2);
       title2 = info.title.slice(0, ix);
