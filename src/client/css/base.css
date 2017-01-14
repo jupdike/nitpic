@@ -1,6 +1,6 @@
 body {
   background: #fff;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: -apple-system, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 15px;
   /*line-height: 1.7;*/
   margin: 0;
@@ -115,9 +115,8 @@ ul {
 .big {
   background-color: #333;
   width: 96vw;
-  height: 54vw;
+  height: 66vw;
 }
-
 .over {
   z-index: 100;
   position: fixed;
@@ -127,6 +126,26 @@ ul {
 .x {
   width: 6vw;
   height: 6vw;
+}
+
+.below {
+  background-color: #333;
+  height: 6vw;
+}
+.topcap, .botcap {
+  padding-top: 0.7vw;
+  padding-left: 1.7vw;
+}
+.topcap {
+  font-size: 1.9vw;
+  vertical-align: middle;
+  color: #bbb;
+}
+.botcap {
+  padding-top: 0.2rem;
+  font-size: 1.4vw;
+  vertical-align: middle;
+  color: #999;
 }
 
 .big img.full {

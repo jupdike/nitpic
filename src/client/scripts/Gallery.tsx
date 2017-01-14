@@ -197,7 +197,8 @@ export class Big extends React.Component<BigProps, BigState> {
     if (!this.props.data || this.props.data.index >= this.props.data.list.length) {
       return null;
     }
-    var fname = this.props.data.list[this.props.data.index].fname;
+    var info: ThumbProps = this.props.data.list[this.props.data.index];
+    var fname = info.fname;
     var bigImg = baseUrl + "/160." + fname;
     if (this.state.smallLoaded) {
       bigImg = baseUrl + "/1920." + fname;
@@ -217,6 +218,15 @@ export class Big extends React.Component<BigProps, BigState> {
       stroke: "#666666",
       fill: "#666666"
     }
+    var title1 = "";
+    var title2 = "";
+    if (info.title.indexOf(": ")) {
+      var ix = info.title.indexOf(": ");
+      title1 = info.title.slice(ix + 2);
+      title2 = info.title.slice(0, ix);
+    } else {
+      title1 = info.title;
+    }
     return (
       <div className="big over" style={sob}>
         <div className="x" onClick={this.handleCloseClick}>
@@ -226,6 +236,10 @@ export class Big extends React.Component<BigProps, BigState> {
           </svg>
         </div>
         <img className="full" src={bigImg} onLoad={this.handleLoaded} />
+        <div className="below">
+          <div className="topcap">{title1}</div>
+          <div className="botcap">{title2}</div>
+        </div>
       </div>
     );
   }
