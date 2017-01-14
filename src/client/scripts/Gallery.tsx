@@ -175,29 +175,48 @@ interface BigProps {
 interface BigState {
   smallLoaded: boolean;
   visible: boolean;
+  data: DataInner;
 }
 export class Big extends React.Component<BigProps, BigState> {
   state: BigState;
   constructor(props: BigProps) {
     super(props);
-    this.state = { smallLoaded: this.props.smallLoaded, visible: this.props.visible }
+    this.state = { smallLoaded: this.props.smallLoaded, visible: this.props.visible, data: this.props.data }
     this.handleLoaded = this.handleLoaded.bind(this);
     this.handleCloseClick = this.handleCloseClick.bind(this);
+    this.handlePrevClick = this.handlePrevClick.bind(this);
+    this.handleNextClick = this.handleNextClick.bind(this);
   }
   handleLoaded(e) {
     if (this.state.smallLoaded) {
       return;
     }
-    this.setState({smallLoaded: true, visible: this.state.visible});
+    this.setState({smallLoaded: true, visible: this.state.visible, data: this.state.data});
   }
   handleCloseClick(e) {
-    this.setState({smallLoaded: this.state.smallLoaded, visible: false});
+    this.setState({smallLoaded: this.state.smallLoaded, visible: false, data: this.state.data});
+  }
+  handlePrevClick(e) {
+    var newIndex = this.state.data.index - 1;
+    if (newIndex < 0) {
+      newIndex = this.state.data.list.length - 1;
+    }
+    this.setState({smallLoaded: false, visible: this.state.visible,
+      data: { list: this.state.data.list, bykey: this.state.data.bykey, index: newIndex, key: this.state.data.key } });
+  }
+  handleNextClick(e) {
+    var newIndex = this.state.data.index + 1;
+    if (newIndex > this.state.data.list.length - 1) {
+      newIndex = 0;
+    }
+    this.setState({smallLoaded: false, visible: this.state.visible,
+      data: { list: this.state.data.list, bykey: this.state.data.bykey, index: newIndex, key: this.state.data.key } });
   }
   render() {
-    if (!this.props.data || this.props.data.index >= this.props.data.list.length) {
+    if (!this.state.data || this.state.data.index >= this.state.data.list.length) {
       return null;
     }
-    var info: ThumbProps = this.props.data.list[this.props.data.index];
+    var info: ThumbProps = this.state.data.list[this.state.data.index];
     var fname = info.fname;
     var bigImg = baseUrl + "/160." + fname;
     if (this.state.smallLoaded) {
@@ -244,7 +263,7 @@ export class Big extends React.Component<BigProps, BigState> {
               <div className="botcap">{title2}</div>
             </div>
 
-            <div className="targets prev">
+            <div className="targets prev" onClick={this.handlePrevClick}>
               <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="10" style={circleStyle} />
                 <path transform="translate(2,2),scale(0.85)" style={pathStyle} d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z"/>
@@ -258,7 +277,7 @@ export class Big extends React.Component<BigProps, BigState> {
               </svg>
             </div>
 
-            <div className="targets next">
+            <div className="targets next" onClick={this.handleNextClick}>
               <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="10" style={circleStyle} />
                 <path transform="translate(2,2),scale(0.85)" style={pathStyle} d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"/>
