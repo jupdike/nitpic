@@ -293,35 +293,36 @@ export class Big extends React.Component<BigProps, BigState> {
       <div className="over">
         <div className="big" style={sob}>
           <img className="full" src={bigImg} onLoad={this.handleLoaded} />
-          <div className="below flex-container">
+          <div className="below">
           
-            <div className="targets x" onClick={this.handleCloseClick}>
+            <div className="flex-item targets x" onClick={this.handleCloseClick}>
               <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="10" style={circleStyle} />
                 <path transform="translate(3,3),scale(0.75)" style={pathStyle} d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
               </svg>
             </div>
-            <div className="flex-item">
+
+            <div className="flex-item caps">
               <div className="topcap">{title1}</div>
               <div className="botcap">{title2}</div>
             </div>
 
-            <div className="targets prev" onClick={this.handlePrevClick}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" style={circleStyle} />
-                <path transform="translate(1.8, 1.8),scale(0.85)" style={pathStyle} d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z"/>
-              </svg>
-            </div>
-
-            <div className="targets playpause" onClick={this.handlePlayPauseClick}>
-              {this.state.playing ? pauseSvg : playSvg}
-            </div>
-
-            <div className="targets next" onClick={this.handleNextClick}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" style={circleStyle} />
-                <path transform="translate(1.8, 1.8),scale(0.85)" style={pathStyle} d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"/>
-              </svg>
+            <div className="flex-item">
+              <div className="targets prev" onClick={this.handlePrevClick}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10" style={circleStyle} />
+                  <path transform="translate(1.8, 1.8),scale(0.85)" style={pathStyle} d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z"/>
+                </svg>
+              </div>
+              <div className="targets playpause" onClick={this.handlePlayPauseClick}>
+                {this.state.playing ? pauseSvg : playSvg}
+              </div>
+              <div className="targets next" onClick={this.handleNextClick}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10" style={circleStyle} />
+                  <path transform="translate(1.8, 1.8),scale(0.85)" style={pathStyle} d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"/>
+                </svg>
+              </div>
             </div>
 
           </div>

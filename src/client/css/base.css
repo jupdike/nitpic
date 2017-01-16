@@ -130,23 +130,14 @@ ul {
   top: 0;
 }
 
-.flex-container {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-content: stretch;
-  align-items: flex-start;
-}
 .flex-item {
-  order: 0;
-  flex: 0 1 auto;
-  align-self: auto;
+  display: inline-block;
+  vertical-align: top;
 }
-.flex-item:nth-child(2) {
-  order: 0;
-  flex: 0.9 1 auto;
-  align-self: auto;
+
+.caps {
+  width: 74vw;
+  height: 6vw;
 }
 
 .targets {
