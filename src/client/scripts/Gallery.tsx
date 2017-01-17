@@ -2,7 +2,7 @@ import React = require("react");
 import TypedReact = require("typed-react");
 import Shared from './Shared'
 
-const baseUrl = Shared.HOST + '/thumbs';
+const baseUrl = '/thumbs';
 
 // create a reusable offscreen canvas
 var canvas = document.createElement("canvas");
@@ -127,7 +127,7 @@ class Thumb extends React.Component<ThumbProps, ThumbState> {
             desc: this.props.desc,
             fname: this.props.fname,
             hex4x4url: Gallery.make4x4ImgUrl(this.props.hex4x4),
-            thumburl: Shared.makethumburl(this.props.fname, this.props.desc) //.replace('/thumbs/', ''),
+            thumburl: Shared.makethumburl(this.props.fname, this.props.desc)
           }
     this.handleClick = this.handleClick.bind(this);
   }
@@ -268,9 +268,9 @@ export class Big extends React.Component<BigProps, BigState> {
     }
     var info: ThumbProps = this.state.data.list[this.state.data.index];
     var fname = info.fname;
-    var bigImg = baseUrl + "/160." + fname;
+    var bigImg = Shared.HOST + baseUrl + "/160." + fname;
     if (this.state.smallLoaded) {
-      bigImg = baseUrl + "/1920." + fname;
+      bigImg = Shared.HOST + baseUrl + "/1920." + fname;
     }
     var style = {
       backgroundImage: 'url("'+bigImg+'")',

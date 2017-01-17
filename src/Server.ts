@@ -161,6 +161,12 @@ export default class Server {
     //this.readMetadata(null);
   }
 
+  writeoutMetadataJson(fname) {
+    var fout = path.join(this.baseout, fname);
+    var json = JSON.stringify(this.state, null, 2);
+    fs.writeFileSync(fout, json);
+  }
+
   openFolder() {
     this.basesrc = path.join(this.settings.inputRootDir(), this.settings.albumName());
     this.baseout = path.join(this.settings.outputRootDir(), this.settings.albumName());

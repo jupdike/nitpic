@@ -94,6 +94,8 @@ var windows = [];
 ipc.on('show-preview', (event) => {
   console.log("main should show a preview window");
 
+  server.writeoutMetadataJson('index.json');
+
   var newIndex = windows.length;
   var wind = new BrowserWindow({width: 1160, height: 700})
   wind.setMinimumSize(1160, 600);
@@ -109,7 +111,7 @@ ipc.on('show-preview', (event) => {
     protocol: 'file:',
     slashes: true
   }))
-  wind.webContents.openDevTools()  
+  wind.webContents.openDevTools()
 });
 
 app.on('ready', createWindow)
