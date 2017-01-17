@@ -6,7 +6,7 @@
 
 body {
   background: #fff;
-  font-family: "San Francisco", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: -apple-system, "San Francisco", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 15px;
   /*line-height: 1.7;*/
   margin: 0;
@@ -228,9 +228,9 @@ ul {
   .big img.full {
     padding: 0;
     margin: 0;
-    padding-left: 4vw;
-    width: 92vw;
-    height: 51.75vw;
+    padding-left: 6vw;
+    width: 87.64vw;
+    height: 49.3vw;
   }
 }
 
