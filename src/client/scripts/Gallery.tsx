@@ -2,8 +2,6 @@ import React = require("react");
 import TypedReact = require("typed-react");
 import Shared from './Shared'
 
-const baseUrl = '/thumbs';
-
 // create a reusable offscreen canvas
 var canvas = document.createElement("canvas");
 var ctx = canvas.getContext("2d");
@@ -114,6 +112,7 @@ interface ThumbProps {
   title, desc, fname, hex4x4: string;
   onSetIndex: any;
   index: number;
+  hostRoot: string;
 }
 interface ThumbState {
   title, desc, fname, hex4x4url, thumburl: string;
@@ -127,7 +126,7 @@ class Thumb extends React.Component<ThumbProps, ThumbState> {
             desc: this.props.desc,
             fname: this.props.fname,
             hex4x4url: Gallery.make4x4ImgUrl(this.props.hex4x4),
-            thumburl: Shared.makethumburl(this.props.fname, this.props.desc)
+            thumburl: Shared.makethumburl(this.props.hostRoot, this.props.fname, this.props.desc)
           }
     this.handleClick = this.handleClick.bind(this);
   }
@@ -186,11 +185,24 @@ var pauseSvg = <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" 
                 <circle cx="12" cy="12" r="10" style={circleStyle} />
                 <path transform="translate(1.8, 1.8),scale(0.85)" style={pathStyle2} d="M9 16h2V8H9v8zm3-14C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm1-4h2V8h-2v8z"/>
               </svg>
+var xsvg =    <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" style={circleStyle} />
+                <path transform="translate(3,3),scale(0.75)" style={pathStyle} d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+              </svg>
+var prevsvg = <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" style={circleStyle} />
+                <path transform="translate(1.8, 1.8),scale(0.85)" style={pathStyle} d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z"/>
+              </svg>
+var nextsvg = <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" style={circleStyle} />
+                <path transform="translate(1.8, 1.8),scale(0.85)" style={pathStyle} d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"/>
+              </svg>
 
 interface BigProps {
   smallLoaded: boolean;
   visible: boolean;
   data: DataInner;
+  hostRoot: string; // assume hostRoot ends with /
 }
 interface BigState {
   smallLoaded: boolean;
@@ -268,9 +280,9 @@ export class Big extends React.Component<BigProps, BigState> {
     }
     var info: ThumbProps = this.state.data.list[this.state.data.index];
     var fname = info.fname;
-    var bigImg = Shared.HOST + baseUrl + "/160." + fname;
+    var bigImg = this.props.hostRoot + "160." + fname;
     if (this.state.smallLoaded) {
-      bigImg = Shared.HOST + baseUrl + "/1920." + fname;
+      bigImg = this.props.hostRoot + "1920." + fname;
     }
     var style = {
       backgroundImage: 'url("'+bigImg+'")',
@@ -296,10 +308,7 @@ export class Big extends React.Component<BigProps, BigState> {
           <div className="below">
           
             <div className="flex-item targets x" onClick={this.handleCloseClick}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" style={circleStyle} />
-                <path transform="translate(3,3),scale(0.75)" style={pathStyle} d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-              </svg>
+              {xsvg}
             </div>
 
             <div className="flex-item caps">
@@ -309,19 +318,13 @@ export class Big extends React.Component<BigProps, BigState> {
 
             <div className="flex-item">
               <div className="targets prev" onClick={this.handlePrevClick}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="10" style={circleStyle} />
-                  <path transform="translate(1.8, 1.8),scale(0.85)" style={pathStyle} d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z"/>
-                </svg>
+                {prevsvg}
               </div>
               <div className="targets playpause" onClick={this.handlePlayPauseClick}>
                 {this.state.playing ? pauseSvg : playSvg}
               </div>
               <div className="targets next" onClick={this.handleNextClick}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="10" style={circleStyle} />
-                  <path transform="translate(1.8, 1.8),scale(0.85)" style={pathStyle} d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"/>
-                </svg>
+                {nextsvg}
               </div>
             </div>
 
@@ -339,6 +342,7 @@ interface DataInner {
   key: number;
 }
 interface ThumbsProps {
+   hostRoot, jsonFile: string;
 }
 interface ThumbsState {
   visible: boolean;
@@ -348,16 +352,12 @@ export class Thumbs extends React.Component<ThumbsProps, ThumbsState> {
   state: ThumbsState = { visible: false, data: { list: [], bykey: {}, index: 0, key: 0 } }
   constructor(props: ThumbsProps) {
     super(props);
-    // this.state = { // use props if needed...
-    // }
     this.handleSetIndex = this.handleSetIndex.bind(this); // such BS that this is necessary
   }
   componentDidMount() {
-    Shared.ajaxGetHelper('/api/pics',  //this.props.url,    TODO also   url={url}
+    Shared.ajaxGetHelper(this.props.hostRoot + this.props.jsonFile,
       (data) => {
-        // console.log("got data");
         this.setState({ visible: this.state.visible, data: data });
-        // console.log(this.state);
       });
   }
   handleSetIndex(index) {
@@ -368,16 +368,13 @@ export class Thumbs extends React.Component<ThumbsProps, ThumbsState> {
     this.setState({visible: true, data: data});
   }
   render() {
-    var thumbNodes = this.state.data.list.map((pic) => {
-      return (
-        <Thumb key={pic.fname} hex4x4={pic.hex4x4} index={pic.index}
-             fname={pic.fname} desc={pic.desc} title={pic.title} onSetIndex={this.handleSetIndex}/>
-      );
-    });
+    var thumbNodes = this.state.data.list.map((pic) =>
+        <Thumb hostRoot={this.props.hostRoot} key={pic.fname} hex4x4={pic.hex4x4} index={pic.index}
+    fname={pic.fname} desc={pic.desc} title={pic.title} onSetIndex={this.handleSetIndex}/> );
     // <div className="album" data={this.state.data}> ... </div>
     return (
       <div className="album">
-        <Big visible={this.state.visible} key={this.state.data.key} data={this.state.data} smallLoaded={false} />
+        <Big hostRoot={this.props.hostRoot} visible={this.state.visible} key={this.state.data.key} data={this.state.data} smallLoaded={false} />
         {thumbNodes}
       </div>
     );

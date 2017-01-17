@@ -17,17 +17,17 @@ export default class Shared {
     return ret;
   }
 
-  public static makethumburl(fname, desc) {
+  public static makethumburl(host, fname, desc) {
     desc = desc || "g=c";
     var grav = Shared.getField(desc, "g", "c");
-    return Shared.HOST + "/thumbs" + "/sq" + grav + "." + fname;
+    var f = "sq" + grav + "." + fname;
+    // assumes host ends with /
+    return host + f;
   }
-
-  public static HOST = "http://localhost:3000"
 
   public static ajaxGetHelper(url, success) {
     $.ajax({
-      url: Shared.HOST + url,
+      url: url,
       dataType: 'json',
       cache: false,
       success: success,
@@ -39,7 +39,7 @@ export default class Shared {
 
   public static ajaxPostHelper(url, data, success) {
     $.ajax({
-      url: Shared.HOST + url,
+      url: url,
       dataType: 'json',
       type: 'POST',
       data: data,

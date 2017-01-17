@@ -22,17 +22,17 @@ export class RenderClass {
     ].join(" ");
     return d;
   }
-  public static RenderGalleryAlbum(url, contentDivId) {
-    ReactDOM.render(
-      <Thumbs/>,
-      document.getElementById(contentDivId)
-    );
-  }
   public static RenderEditAlbum(url, key, contentDivId) {
     console.log("call RenderEditAlbum");
     //document.getElementById(contentDivId).innerHTML = "";
     ReactDOM.render(
-      <EditAlbum key={key} url={url}/>,
+      <EditAlbum key={key} hostRoot="http://localhost:3000/" thumbsUrlBase="thumbs/" url={url}/>,
+      document.getElementById(contentDivId)
+    );
+  }
+  public static RenderGalleryAlbum(hostRoot, jsonPath, contentDivId) {
+    ReactDOM.render(
+      <Thumbs hostRoot={hostRoot} jsonFile={jsonPath}/>,
       document.getElementById(contentDivId)
     );
   }

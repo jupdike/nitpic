@@ -84,7 +84,7 @@
       ipc.on('metadata-read', (event, arg) => {
         console.log('Metadata has finished being read');
         key++;
-        RenderSide.RenderClass.RenderEditAlbum('/api/pics', key, 'content');
+        RenderSide.RenderClass.RenderEditAlbum('api/pics', key, 'content');
       });
     </script>
 
