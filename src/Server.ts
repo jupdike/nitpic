@@ -177,12 +177,12 @@ export default class Server {
   <body>
     <div id="content" class="contents"></div>
 
-    <!-- Dependencies -->
+    <!-- Dependencies, the web way -->
     <script src="./third-party/react.js"></script>
     <script src="./third-party/react-dom.js"></script>
     <script src="./third-party/jquery.js"></script>
     <!--script>
-      window.$ = window.jQuery = require('./third-party/jquery.js')
+      window.$ = window.jQuery = require('./third-party/jquery.js') // the Electron way
     </script-->
 
     <!-- Main -- Electron + Webpack = :-( -->
@@ -283,6 +283,27 @@ export default class Server {
 
     });
 
+    // hack to test out static file server version, outside of Electron!
+    this.sapp.get('/static/bundle.js', (req, res) => {
+      const fname = req.params.filename;
+      const full = path.join(__dirname, 'client', 'bundle.js');
+      console.log('requested '+full);
+      res.sendFile(full);
+    });
+    this.sapp.get('/static/css/base.css', (req, res) => {
+      const fname = req.params.filename;
+      const full = path.join(__dirname, 'client', 'css', 'base.css');
+      console.log('requested '+full);
+      res.sendFile(full);
+    });
+    this.sapp.get('/static/third-party/:filename', (req, res) => {
+      const fname = req.params.filename;
+      const full = path.join(__dirname, 'client', 'third-party', fname);
+      //console.log('requested '+full);
+      res.sendFile(full);
+    });
+
+    // get thumbnails and index.json from Publishing/FOLERNAME/*.jpg location
     this.sapp.get('/static/:filename', (req, res) => {
       const fname = req.params.filename;
       const full = path.join(this.baseout, fname);
