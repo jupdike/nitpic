@@ -94,7 +94,7 @@ var windows = [];
 ipc.on('show-preview', (event) => {
   console.log("main should show a preview window");
 
-  server.writeoutMetadataJson('index.json');
+  server.writeoutMetadataJsonEtc('http://localhost:3000/static/', 'index.json');
 
   var newIndex = windows.length;
   var wind = new BrowserWindow({width: 1160, height: 700})

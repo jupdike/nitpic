@@ -161,10 +161,40 @@ export default class Server {
     //this.readMetadata(null);
   }
 
-  writeoutMetadataJson(fname) {
-    var fout = path.join(this.baseout, fname);
+  writeoutMetadataJsonEtc(hostRoot, jsonFname) {
+    var fout = path.join(this.baseout, jsonFname);
     var json = JSON.stringify(this.state, null, 2);
     fs.writeFileSync(fout, json);
+
+    var f2 = path.join(this.baseout, "index.html");
+    var html = `<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Gallery Preview - Nitpic</title>
+    <link rel="stylesheet" href="css/base.css" />
+  </head>
+  <body>
+    <div id="content" class="contents"></div>
+
+    <!-- Dependencies -->
+    <script src="./third-party/react.js"></script>
+    <script src="./third-party/react-dom.js"></script>
+    <script src="./third-party/jquery.js"></script>
+    <!--script>
+      window.$ = window.jQuery = require('./third-party/jquery.js')
+    </script-->
+
+    <!-- Main -- Electron + Webpack = :-( -->
+    <script src="./bundle.js"></script>
+
+    <script>
+      RenderSide.RenderClass.RenderGalleryAlbum('${hostRoot}', '${jsonFname}', 'content');
+    </script>
+
+  </body>
+</html>`;
+    fs.writeFileSync(f2, html);
   }
 
   openFolder() {
@@ -253,7 +283,7 @@ export default class Server {
 
     });
 
-    this.sapp.get('/thumbs/:filename', (req, res) => {
+    this.sapp.get('/static/:filename', (req, res) => {
       const fname = req.params.filename;
       const full = path.join(this.baseout, fname);
       //console.log('requested '+full);

@@ -26,7 +26,7 @@ export class RenderClass {
     console.log("call RenderEditAlbum");
     //document.getElementById(contentDivId).innerHTML = "";
     ReactDOM.render(
-      <EditAlbum key={key} hostRoot="http://localhost:3000/" thumbsUrlBase="thumbs/" url={url}/>,
+      <EditAlbum key={key} hostRoot="http://localhost:3000/" thumbsUrlBase="static/" url={url}/>,
       document.getElementById(contentDivId)
     );
   }
