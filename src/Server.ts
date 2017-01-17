@@ -189,7 +189,8 @@ export default class Server {
     <script src="./bundle.js"></script>
 
     <script>
-      RenderSide.RenderClass.RenderGalleryAlbum('${hostRoot}', '${jsonFname}', 'content');
+      // ${hostRoot} // TODO put this back for Github version
+      RenderSide.RenderClass.RenderGalleryAlbum('http://cerebrum.local:3000/static/', '${jsonFname}', 'content');
     </script>
 
   </body>
