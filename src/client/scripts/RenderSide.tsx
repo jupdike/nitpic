@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { EditAlbum } from "./scripts/Album";
-import { Thumbs } from "./scripts/Gallery";
+import { EditAlbum } from "./Album";
+import { Thumbs } from "./Gallery";
 
 export class RenderClass {
   static polarToCartesian(centerX, centerY, radius, angleInDegrees) {

@@ -1,5 +1,5 @@
 module.exports = {
-  entry: "./src/client/RenderSide.tsx",
+  entry: "./src/client/scripts/RenderSide.tsx",
   output: {
     library: "RenderSide",
     libraryTarget: "var",
