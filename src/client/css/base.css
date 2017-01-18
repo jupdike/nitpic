@@ -175,7 +175,6 @@ ul {
   color: #999;
 }
 
-
 @media all and (max-aspect-ratio: 3/4) {
   .below {
     height: 12vw;
@@ -238,6 +237,34 @@ ul {
     height: 56.3vw;
   }
 }
+
+@media all and (min-aspect-ratio: 3/4) and (max-aspect-ratio: 10/10) {
+  .below {
+    height: 9vw;
+  }
+  .topcap, .botcap {
+    max-width: 55vw;
+    max-height: 3.6vw;
+    padding-top: 0.6vw;
+    padding-left: 3.4vw;
+  }
+  .topcap {
+    font-size: 3vw;
+    padding-top: 0.8vw;
+  }
+  .botcap {
+    font-size: 2.4vw;
+  }
+  .targets, .svg-buttons {
+    width: 9vw;
+    height: 9vw;
+  }
+  .caps {
+    width: 59vw;
+    height: 9vw;
+  }
+}
+
 
 @media all and (min-aspect-ratio: 13/10) and (max-aspect-ratio: 14/10) {
   .big img.full {
