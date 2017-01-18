@@ -399,7 +399,7 @@ export class Thumbs extends React.Component<ThumbsProps, ThumbsState> {
     return (
       <div className="album">
         <Big hostRoot={this.props.hostRoot} visible={this.state.visible} key={this.state.data.key} data={this.state.data} smallLoaded={false} />
-        {thumbNodes}
+        <div className="thumbs">{thumbNodes}</div>
       </div>
     );
   }

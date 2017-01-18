@@ -174,7 +174,7 @@ export default class Server {
     <title>Gallery Preview - Nitpic</title>
     <link rel="stylesheet" href="css/base.css" />
   </head>
-  <body>
+  <body style="background-color: #404044">
     <div id="content" class="contents"></div>
 
     <!-- Dependencies, the web way -->
@@ -288,6 +288,12 @@ export default class Server {
     this.sapp.get('/static/bundle.js', (req, res) => {
       const fname = req.params.filename;
       const full = path.join(__dirname, 'client', 'bundle.js');
+      console.log('requested '+full);
+      res.sendFile(full);
+    });
+    this.sapp.get('/static/bundle.js.map', (req, res) => {
+      const fname = req.params.filename;
+      const full = path.join(__dirname, 'client', 'bundle.js.map');
       console.log('requested '+full);
       res.sendFile(full);
     });

@@ -14,6 +14,12 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 
+.thumbs {
+  margin-left: auto;
+  margin-right: auto;
+  width: 960px;
+}
+
 a {
   color: #4183c4;
   text-decoration: none;
