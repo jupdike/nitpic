@@ -177,23 +177,23 @@ var pathStyle2 = {
   stroke: "#555555",
   fill: "#555555"
 }
-var playSvg = <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
+var playSvg = <svg xmlns="http://www.w3.org/2000/svg" className="svg-button" viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="10" style={circleStyle} />
                 <path transform="translate(1.8, 1.8),scale(0.85)" style={pathStyle2} d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
               </svg>
-var pauseSvg = <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
+var pauseSvg = <svg xmlns="http://www.w3.org/2000/svg" className="svg-button" viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="10" style={circleStyle} />
                 <path transform="translate(1.8, 1.8),scale(0.85)" style={pathStyle2} d="M9 16h2V8H9v8zm3-14C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm1-4h2V8h-2v8z"/>
               </svg>
-var xsvg =    <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
+var xsvg =    <svg xmlns="http://www.w3.org/2000/svg" className="svg-button" viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="10" style={circleStyle} />
                 <path transform="translate(3,3),scale(0.75)" style={pathStyle} d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
               </svg>
-var prevsvg = <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
+var prevsvg = <svg xmlns="http://www.w3.org/2000/svg" className="svg-button" viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="10" style={circleStyle} />
                 <path transform="translate(1.8, 1.8),scale(0.85)" style={pathStyle} d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z"/>
               </svg>
-var nextsvg = <svg xmlns="http://www.w3.org/2000/svg" width="6vw" height="6vw" viewBox="0 0 24 24">
+var nextsvg = <svg xmlns="http://www.w3.org/2000/svg" className="svg-button" viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="10" style={circleStyle} />
                 <path transform="translate(1.8, 1.8),scale(0.85)" style={pathStyle} d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"/>
               </svg>

@@ -140,6 +140,11 @@ ul {
   height: 6vw;
 }
 
+.svg-buttons {
+  width: 6vw;
+  height: 6vw;
+}
+
 .targets {
   display: inline-block;
   vertical-align: top;
@@ -168,6 +173,34 @@ ul {
   padding-top: 0.2rem;
   font-size: 1.4vw;
   color: #999;
+}
+
+
+@media all and (max-aspect-ratio: 3/4) {
+  .below {
+    height: 12vw;
+  }
+  .topcap, .botcap {
+    max-width: 43vw;
+    max-height: 5vw;
+    padding-top: 0.7vw;
+    padding-left: 3.4vw;
+  }
+  .topcap {
+    font-size: 3.8vw;
+    padding-top: 1.3vw;
+  }
+  .botcap {
+    font-size: 2.8vw;
+  }
+  .targets, .svg-buttons {
+    width: 12vw;
+    height: 12vw;
+  }
+  .caps {
+    width: 47vw;
+    height: 12vw;
+  }
 }
 
 @media all and (max-aspect-ratio: 9/16) {
