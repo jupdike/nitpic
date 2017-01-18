@@ -53,7 +53,7 @@ interface PrettyCapProps {
 }
 class PrettyCaption extends React.Component<PrettyCapProps, undefined> {
   render() {
-    var title = this.props.title || "";
+    var title = this.props.title || "(click to view full image)";
     if (title.indexOf(":") > -1) {
       // TWO+ PIECES (use two of them)
       var t1 = this.props.title.split(":")[0];
@@ -318,12 +318,14 @@ export class Big extends React.Component<BigProps, BigState> {
     };
     var title1 = "";
     var title2 = "";
-    if (info.title.indexOf(": ") > -1) {
-      var ix = info.title.indexOf(": ");
-      title1 = info.title.slice(ix + 2);
-      title2 = info.title.slice(0, ix);
-    } else {
-      title1 = info.title;
+    if (info.title) {
+      if (info.title.indexOf(": ") > -1) {
+        var ix = info.title.indexOf(": ");
+        title1 = info.title.slice(ix + 2);
+        title2 = info.title.slice(0, ix);
+      } else {
+        title1 = info.title;
+      }
     }
     return (
       <div className="over">
