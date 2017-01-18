@@ -161,10 +161,27 @@ export default class Server {
     //this.readMetadata(null);
   }
 
+  copyFile(from, two) {
+    fs.createReadStream(from).pipe(fs.createWriteStream(two));
+  }
+
+  // Pre-Preview: gets the static files ready for serving: either on localhost, or on some remote server somewhere
   writeoutMetadataJsonEtc(hostRoot, jsonFname) {
     var fout = path.join(this.baseout, jsonFname);
     var json = JSON.stringify(this.state, null, 2);
     fs.writeFileSync(fout, json);
+
+    try {
+      fs.mkdirSync(path.join(this.baseout, "nitpic")); // it's ok if it exists
+    }
+    catch (e) {
+    }
+    this.copyFile(path.join(__dirname, "client", "bundle.js"), path.join(this.baseout, "nitpic", "bundle.js"));
+    this.copyFile(path.join(__dirname, "client", "bundle.js.map"), path.join(this.baseout, "nitpic", "bundle.js.map"));
+    this.copyFile(path.join(__dirname, "client", "css", "base.css"), path.join(this.baseout, "nitpic", "base.css"));
+    this.copyFile(path.join(__dirname, "client", "third-party", "jquery.js"), path.join(this.baseout, "nitpic", "jquery.js"));
+    this.copyFile(path.join(__dirname, "client", "third-party", "react.js"), path.join(this.baseout, "nitpic", "react.js"));
+    this.copyFile(path.join(__dirname, "client", "third-party", "react-dom.js"), path.join(this.baseout, "nitpic", "react-dom.js"));
 
     var f2 = path.join(this.baseout, "index.html");
     var html = `<!DOCTYPE html>
@@ -172,25 +189,21 @@ export default class Server {
   <head>
     <meta charset="utf-8">
     <title>Gallery Preview - Nitpic</title>
-    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="./nitpic/base.css" />
   </head>
   <body style="background-color: #404044">
     <div id="content" class="contents"></div>
 
     <!-- Dependencies, the web way -->
-    <script src="./third-party/react.js"></script>
-    <script src="./third-party/react-dom.js"></script>
-    <script src="./third-party/jquery.js"></script>
-    <!--script>
-      window.$ = window.jQuery = require('./third-party/jquery.js') // the Electron way
-    </script-->
-
-    <!-- Main -- Electron + Webpack = :-( -->
-    <script src="./bundle.js"></script>
+    <script src="./nitpic/react.js"></script>
+    <script src="./nitpic/react-dom.js"></script>
+    <script src="./nitpic/jquery.js"></script>
+    <script src="./nitpic/bundle.js"></script>
 
     <script>
-      // ${hostRoot} // TODO put this back for Github version
-      RenderSide.RenderClass.RenderGalleryAlbum('http://cerebrum.local:3000/static/', '${jsonFname}', 'content');
+      // TODO put this back for Github version
+      RenderSide.RenderClass.RenderGalleryAlbum('${hostRoot}', '${jsonFname}', 'content');
+      //RenderSide.RenderClass.RenderGalleryAlbum('http://cerebrum.local:3000/static/', '${jsonFname}', 'content');
     </script>
 
   </body>
@@ -225,7 +238,7 @@ export default class Server {
       // an API server in conjunction with something like webpack-dev-server.
       res.setHeader('Access-Control-Allow-Origin', '*');
 
-      // Disable caching so we'll always get the latest comments.
+      // Disable caching so we'll always get the latest data.
       res.setHeader('Cache-Control', 'no-cache');
       next();
     });
@@ -285,27 +298,9 @@ export default class Server {
     });
 
     // hack to test out static file server version, outside of Electron!
-    this.sapp.get('/static/bundle.js', (req, res) => {
+    this.sapp.get('/static/nitpic/:filename', (req, res) => {
       const fname = req.params.filename;
-      const full = path.join(__dirname, 'client', 'bundle.js');
-      console.log('requested '+full);
-      res.sendFile(full);
-    });
-    this.sapp.get('/static/bundle.js.map', (req, res) => {
-      const fname = req.params.filename;
-      const full = path.join(__dirname, 'client', 'bundle.js.map');
-      console.log('requested '+full);
-      res.sendFile(full);
-    });
-    this.sapp.get('/static/css/base.css', (req, res) => {
-      const fname = req.params.filename;
-      const full = path.join(__dirname, 'client', 'css', 'base.css');
-      console.log('requested '+full);
-      res.sendFile(full);
-    });
-    this.sapp.get('/static/third-party/:filename', (req, res) => {
-      const fname = req.params.filename;
-      const full = path.join(__dirname, 'client', 'third-party', fname);
+      const full = path.join(this.baseout, 'nitpic', fname);
       //console.log('requested '+full);
       res.sendFile(full);
     });
