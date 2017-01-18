@@ -222,6 +222,30 @@ export class Big extends React.Component<BigProps, BigState> {
     this.handlePrevClick = this.handlePrevClick.bind(this);
     this.handleNextClick = this.handleNextClick.bind(this);
     this.handlePlayPauseClick = this.handlePlayPauseClick.bind(this);
+
+    $(document).bind('keyup', (e) => {
+      if (!this.state.visible) {
+        return; // don't do anything unless this Big component is visible
+      }
+      console.log('pressed '+e.which);
+      if (e.which == 37) { // left arrow 
+        e.preventDefault();
+        this.handlePrevClick(null);
+      }
+      else if (e.which == 39) { // right arrow
+        e.preventDefault();
+        this.handleNextClick(null);
+      }
+      else if (e.which == 32) { // space bar
+        e.preventDefault();
+        this.handlePlayPauseClick(null);
+      }
+      else if (e.which == 27) { // escape key
+        e.preventDefault();
+        this.handleCloseClick(null);
+      }
+    });
+
   }
   handleLoaded(e) {
     if (this.state.smallLoaded) {
