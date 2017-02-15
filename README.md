@@ -46,13 +46,13 @@ Nitpic has some cool features not found elsewhere:
 landscape, just choose north, south, east, or west, if center cropping is not working
 on any specific image.
 - **Blurry image previews**: fast loading 4x4 pixel thumbnails look gorgeous and make it
-clear that your page is loading. (The image data for these thumbnails is in the album
+clear that your page is loading. (The image data for these tiny "thumbnails" is in the album
 JSON, along with the image captions, so it loads really fast, all at once. Great for really
 large galleries.)
 - **You own and pay for your images to be published**. You pay Amazon (or Azure, or
 anything that can put buckets (folders corresponding to an album) of static files on the
 public internet.) I do not touch your data. You can switch to any service you like, any time
-you like. (If you fork Nitpic and get that working, I would love to know about it.)
+you like. (If you fork Nitpic and get other services working, I would love to know about it.)
 - **Independent image hosting**: host your blog or website on any service, and embed your
 galleries there using JavaScript, then host your images for cheap wherever that makes sense,
 whether it is the same service, or yet another service.
@@ -96,14 +96,6 @@ solution. Nitpic is not a community of like-minded suckers handing over their be
 to a VC-backed company located in another country. Nitpic does not assume that it knows
 best. Nitpic seeks to be dispensible and replaceable.
 
-## Developer Setup
-
-- brew install imagemagick
-- brew install exiv2 (or from source... hmmm... double check this)
-- Execute npm install -- to get Electron, React, jQuery packages installed into node_modules
-- Execute ./build.sh to create build/ and compile .ts to .js files, etc.
-- Run ./run.sh to launch Electono app.
-
 [1] Example: Google bought Picasa and it was great for many
 years. Then they axed it and now all my work (10+ years) of posting photos and adding
 captions and metadata, picking album covers, etc. is lost in a sea of Big Data
@@ -111,7 +103,17 @@ soup (i.e. Google Photos, which defaults to hiding subsets of your photo albums 
 random. Wankers.) In addition Dropbox just axed web publishing (in Public folder)
 just weeks after I upgraded to Pro. Wankers. This was after Flickr gave me a Pro
 account with "no limits" and then revoked it. And Posterous hosted my free blog,
-and then was acqui-hired by Twitter and "sunsetted" like a two-legged horse.
+and then was acqui-hired by Twitter and "sunsetted" like a two-legged horse. And
+why do people hand over their best work to Medium? You are feeding their VC-backed
+machine.
+
+## Developer Setup
+
+- brew install imagemagick
+- brew install exiv2 (or from source... hmmm... double check this)
+- Execute npm install -- to get Electron, React, jQuery packages installed into node_modules
+- Execute ./build.sh to create build/ and compile .ts to .js files, etc.
+- Run ./run.sh to launch Electron app.
 
 <hr/>
 
