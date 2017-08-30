@@ -29,6 +29,7 @@ a:hover {
   text-decoration: underline;
 }
 
+/*
 h1, h2, h3, h4 {
   font-weight: bold;
   margin: 0 0 15px;
@@ -52,6 +53,7 @@ h3 {
 h4 {
   font-size: 1.2em;
 }
+*/
 
 p, ul {
   margin: 15px 0;
@@ -134,6 +136,7 @@ ul {
   z-index: 100;
   position: fixed;
   top: 0;
+  left: 0;
 }
 
 .flex-item {
