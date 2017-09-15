@@ -113,6 +113,10 @@ export default class NitpicSettings {
     return this.settings.albumName as string;
   }
 
+  public pathToWatermark(): string {
+    return this.settings.pathToWatermark as string;
+  }
+
   with(kstr: string, v: any, dict: any) {
     if (v) {
       dict[kstr] = v;

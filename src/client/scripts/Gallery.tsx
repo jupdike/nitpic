@@ -210,7 +210,7 @@ interface BigState {
   data: DataInner;
   playing: boolean;
 }
-// TODO arrow keys left and right, space to toggle play/pause, escape to close
+// arrow keys left and right, space to toggle play/pause, escape to close
 export class Big extends React.Component<BigProps, BigState> {
   state: BigState;
   constructor(props: BigProps) {

@@ -155,10 +155,9 @@ export default class Server {
 
   baseout: string;
   basesrc: string;
-  constructor(public ipc_send: any, public settings: NitpicSettings, public watermark: string) {
+  constructor(public ipc_send: any, public settings: NitpicSettings) {
     this.openFolder();
     this.init();
-    //this.readMetadata(null);
   }
 
   copyFile(from, two) {
@@ -226,6 +225,7 @@ export default class Server {
   }
 
   init() {
+    
     this.sapp.set('port', (process.env.PORT || 3000));
     console.log('serving on port: ' + (process.env.PORT || 3000));
 
@@ -364,7 +364,9 @@ export default class Server {
       console.log('Expected not to have a trailing slash! '+pub);
       process.exit(1);
     }
-    const watermarkCmd = this.watermark ? " -gravity South "+this.watermark+" -compose Over -composite " : " ";
+    let watermark = this.settings.pathToWatermark();
+    // TODO deal with case of no watermark or file not found...
+    const watermarkCmd = watermark ? " -gravity South "+watermark+" -compose Over -composite " : " ";
     pub = pub + '';
     const out1 = pub+"/160."+e;
     // note no space between pre+e+"[160x90]" -- add a space on pain of death!

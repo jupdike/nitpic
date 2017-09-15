@@ -27,9 +27,6 @@ function getAppDataPath() {
 const numcpus = os.cpus().length;
 const numcores = (numcpus*0.75)|0;
 
-// TODO: change this to allow user to set this and store in NitpicSettings (along with -gravity of Center, N,S,E,W, NW, SW, NE, SE)
-const default_watermark = 'jared-updike-org-mark.png';
-
 var settings: NitpicSettings;
 var server: Server;
 
@@ -40,7 +37,7 @@ function createWindow() {
   console.log("OS says it has this many cores : "+numcpus); // could be 2x physical cores, because of hyper-threading
   console.log("OS probably has this many cores: "+numcores);
 
-  server = new Server(ipc_send, settings, path.join(__dirname, default_watermark));
+  server = new Server(ipc_send, settings);
 
   // Create the browser window.
   win = new BrowserWindow({width: 1160, height: 800})
