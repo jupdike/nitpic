@@ -170,6 +170,11 @@ export default class Server {
             return 0;
           }
         });
+        var ix = 0;
+        this.state.list.forEach( elem => {
+          elem.index = ix;
+          ix += 1;
+        });
 
         fs.writeSync(2, "\nDONE READING METADATA\n");
         // done now, call the server side callback thing, saying we are done reading all metadata
