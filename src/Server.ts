@@ -282,6 +282,17 @@ export default class Server {
       res.json(this.state);   //JSON.parse(data));
     });
 
+    this.sapp.get('/api/publish-summary', (req, res) => {
+      let publishFolderPieces = this.baseout.replace(/\\/g,'/').split('/');
+      let publishFolder = publishFolderPieces[publishFolderPieces.length-2];
+      let idName = 'gal-' + this.settings.albumName().toLowerCase().replace(/ /g, '-')
+      let cmdStr = `(cd ${this.settings.outputRootDir()} && ~/bin/s3pub ${this.settings.albumName()} s3://${this.settings.s3bucketname()}/${publishFolder}/)`
+      let htmlSnip = `<div id="${idName}" class="contents"></div>\n<script>\n  RenderSide.RenderClass.RenderGalleryAlbum(\n  'https://${this.settings.s3bucketname()}.s3-us-west-2.amazonaws.com/${publishFolder}/${this.settings.albumName()}/',\n  'index.json',\n  '${idName}');\n</script>\n<br/>`
+      let pre1 = cmdStr
+      let pre2 = htmlSnip.replace(/\</g,'&lt;').replace(/\>/g,'&gt;');
+      res.send('<pre>'+pre1+'</pre><br/><pre>'+pre2+'</pre>');
+    });
+
     this.sapp.post('/api/pics', (req, res) => {
       var data = req.body;
       console.log('POST>');
@@ -340,7 +351,7 @@ export default class Server {
       res.sendFile(full);
     });
 
-    // get thumbnails and index.json from Publishing/FOLERNAME/*.jpg location
+    // get thumbnails and index.json from Publishing/FOLDERNAME/*.jpg location
     this.sapp.get('/static/:filename', (req, res) => {
       const fname = req.params.filename;
       const full = path.join(this.baseout, fname);

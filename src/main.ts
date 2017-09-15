@@ -111,6 +111,29 @@ ipc.on('show-preview', (event) => {
   wind.webContents.openDevTools()
 });
 
+ipc.on('show-publish', (event) => {
+  console.log("main should show a publish window");
+
+  server.writeoutMetadataJsonEtc('http://localhost:3000/static/', 'index.json');
+  
+  var newIndex = windows.length;
+  var wind = new BrowserWindow({width: 800, height: 700})
+  wind.setMinimumSize(800, 600);
+  windows.push(wind);
+
+  // Emitted when the window is closed.
+  wind.on('closed', () => {
+    windows[newIndex] = null; // null out the reference where the .push just added it (keep all the indices the same, however)
+  })
+
+  wind.loadURL(url.format({
+    pathname: path.join(__dirname, 'client', 'publish.html'),
+    protocol: 'file:',
+    slashes: true
+  }))
+  wind.webContents.openDevTools()
+});
+
 app.on('ready', createWindow)
 
 // Quit when all windows are closed.

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Publish - Nitpic</title>
+    <link rel="stylesheet" href="css/base.css" />
+  </head>
+  <body style="background-color: #404044">
+    <div id="content" class="contents"></div>
+    <!-- Dependencies -->
+    <script src="./third-party/react.js"></script>
+    <script src="./third-party/react-dom.js"></script>
+    <!-- script src="./third-party/jquery.js"></script -->
+    <script>
+      window.$ = window.jQuery = require('./third-party/jquery.js')
+    </script>
+
+    <!-- Main -- Electron + Webpack = :-( -->
+    <script src="./bundle.js"></script>
+
+    <div id="publish-container">
+      TODO put some contents here
+    </div>
+
+    <script>
+      var url = 'http://localhost:3000/api/publish-summary'
+      window.$.ajax({
+        url: url,
+        dataType: 'html',
+        cache: false,
+        success: function(data) {
+          //console.log('got data:', data);
+          $('#publish-container').html(data);
+        },
+        error: function(xhr, status, err) {
+          console.error(this.props.url, status, err.toString());
+        }.bind(this)
+      });
+    </script>
+
+  </body>
+</html>

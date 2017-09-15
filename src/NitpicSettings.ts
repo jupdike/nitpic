@@ -105,12 +105,16 @@ export default class NitpicSettings {
     return this.settings.inputRootDir as string;
   }
 
-  outputRootDir(): string {
+  public outputRootDir(): string {
     return this.settings.outputRootDir as string;
   }
 
-  albumName(): string {
+  public albumName(): string {
     return this.settings.albumName as string;
+  }
+
+  public s3bucketname(): string {
+    return this.settings.s3bucketname as string;
   }
 
   public pathToWatermark(): string {
