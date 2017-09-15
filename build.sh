@@ -14,4 +14,4 @@ cp src/*.js build/
 cp src/client/css/*.css build/client/css/
 cp src/client/*.html build/client/
 cp src/client/scripts/*.js build/client/scripts/
-cp *.png build/
+#cp *.png build/

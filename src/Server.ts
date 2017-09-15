@@ -18,6 +18,7 @@ const gravD = {'c':'Center', 'n':'North',
 
 const XMP_DC_TITLE = 'Xmp.dc.title'
 const XMP_DC_DESC  = 'Xmp.dc.description'
+const EXIF_DATETIME = 'Exif.Image.DateTime'
 
 export default class Server {
 
@@ -76,11 +77,29 @@ export default class Server {
   }
 
   readOneJpegExif(fname, ob, done) {
-    const args = ['-P','X','pr',this.basesrc+'/'+fname];
+    const args = ['-P','EX','pr',this.basesrc+'/'+fname];
     const child = execFile(exiv2, args, (error, stdout, stderr) => {
       //console.log("returned from exiv2 "+fname);
       stdout.split('\n').forEach( (val, index, array) => {
+        //console.log(fname, '**', val);
+
         var k = null;
+        if (val.indexOf(EXIF_DATETIME) >= 0) {
+          k = 'datetime';
+          var i = val.indexOf('Ascii');
+          val = val.slice(i+5).trim();
+          // trim everything before the first space
+          i = val.indexOf(' ');
+          if (i >= 0) {
+            val = val.slice(i);
+          }
+          val = val.trim();
+          //console.error('datetime|'+val+'|');
+          //let dt = Date.parse(val);
+          //console.error('dt', dt);
+          ob[k] = val;
+          return;
+        }
         if (val.indexOf(XMP_DC_TITLE) >= 0) {
           k = 'title';
         }
@@ -141,6 +160,17 @@ export default class Server {
         if (err) {
           console.error(err.message);
         }
+        // sort by datetime to get things mostly into the order things were shot!
+        this.state.list.sort((a, b) => {
+          if (a.datetime > b.datetime) {
+            return 1;
+          } else if (a.datetime < b.datetime) {
+            return -1;
+          } else {
+            return 0;
+          }
+        });
+
         fs.writeSync(2, "\nDONE READING METADATA\n");
         // done now, call the server side callback thing, saying we are done reading all metadata
         callback();
