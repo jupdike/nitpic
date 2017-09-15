@@ -1,9 +1,9 @@
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, Menu} = require('electron')
 const path = require('path')
 const url = require('url')
 const fs = require('fs')
 const ipc = require('electron').ipcMain
-const os = require('os');
+const os = require('os')
 
 //app.setName("Nitpic"); // does nothing. TODO this should be in the Info.plist and we should use electron-packager
 
@@ -31,6 +31,26 @@ var settings: NitpicSettings;
 var server: Server;
 
 function createWindow() {
+  let template = [{
+    label: "Application",
+    submenu: [
+        { label: "About Application", selector: "orderFrontStandardAboutPanel:" },
+        { type: "separator" },
+        { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
+    ]}, {
+    label: "Edit",
+    submenu: [
+        { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
+        { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
+        { type: "separator" },
+        { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
+        { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
+        { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+        { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+    ]}
+  ];
+  Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+
   var datapath = path.join(getAppDataPath(), 'Nitpic', 'Settings');
   settings = new NitpicSettings(datapath);
 
