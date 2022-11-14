@@ -1,5 +1,5 @@
 import React = require("react");
-import TypedReact = require("typed-react");
+//import TypedReact = require("typed-react");
 import Shared from './Shared'
 
 // create a reusable offscreen canvas
@@ -304,15 +304,15 @@ export class Big extends React.Component<BigProps, BigState> {
     }
     var info: ThumbProps = this.state.data.list[this.state.data.index];
     var fname = info.fname;
-    var bigImg = this.props.hostRoot + "160." + fname;
+    var bigImg = this.props.hostRoot + "130." + fname;
     if (this.state.smallLoaded) {
-      bigImg = this.props.hostRoot + "1920." + fname;
+      bigImg = this.props.hostRoot + "1560." + fname;
     }
-    var style = {
-      backgroundImage: 'url("'+bigImg+'")',
-      backgroundSize: "96vw 54vw",
-      backgroundRepeat: "no-repeat",
-    };
+    // var style = {
+    //   backgroundImage: 'url("'+bigImg+'")',
+    //   backgroundSize: "96vw 54vw",
+    //   backgroundRepeat: "no-repeat",
+    // };
     var sob = {
       display: this.state.visible ? "block" : "none"
     };
@@ -333,25 +333,25 @@ export class Big extends React.Component<BigProps, BigState> {
           <img className="full" src={bigImg} onLoad={this.handleLoaded} />
           <div className="below">
           
-            <div className="flex-item targets x" onClick={this.handleCloseClick}>
-              {xsvg}
+            <div className="flex-item">
+              <div className="flex-item targets x" onClick={this.handleCloseClick}>
+                {xsvg}
+              </div>
+              <div className="targets playpause" onClick={this.handlePlayPauseClick}>
+                {this.state.playing ? pauseSvg : playSvg}
+              </div>
+              <br className="break-visibility"/>
+              <div className="targets prev" onClick={this.handlePrevClick}>
+                {prevsvg}
+              </div>
+              <div className="targets next" onClick={this.handleNextClick}>
+                {nextsvg}
+              </div>
             </div>
 
             <div className="flex-item caps">
               <div className="topcap">{title1}</div>
               <div className="botcap">{title2}</div>
-            </div>
-
-            <div className="flex-item">
-              <div className="targets prev" onClick={this.handlePrevClick}>
-                {prevsvg}
-              </div>
-              <div className="targets playpause" onClick={this.handlePlayPauseClick}>
-                {this.state.playing ? pauseSvg : playSvg}
-              </div>
-              <div className="targets next" onClick={this.handleNextClick}>
-                {nextsvg}
-              </div>
             </div>
 
           </div>

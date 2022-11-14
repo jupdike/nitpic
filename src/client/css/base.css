@@ -12,6 +12,8 @@ body {
   margin: 0;
   padding: 0;
   -webkit-text-size-adjust: 100%;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
 }
 
 .thumbs {
@@ -132,6 +134,7 @@ ul {
   height: 101vh;
   z-index: 101;
 }
+
 .over {
   z-index: 100;
   position: fixed;
@@ -145,191 +148,80 @@ ul {
 }
 
 .caps {
-  width: 74vw;
-  height: 6vw;
+  width: calc(100vw - 13vh);
 }
 
 .svg-buttons {
-  width: 6vw;
-  height: 6vw;
+  width: 6vh;
+  height: 6vh;
 }
 
 .targets {
   display: inline-block;
   vertical-align: top;
-  width: 6vw;
-  height: 6vw;
+  width: 6vh;
+  height: 6vh;
 }
 
 .below {
   background-color: #333;
-  height: 6vw;
+  height: 6vh;
   margin: 0;
   padding: 0;
 }
 .topcap, .botcap {
-  max-width: 70vw;
-  max-height: 2.5vw;
-  padding-top: 0.7vw;
-  padding-left: 1.7vw;
-  overflow: hidden;
+  padding-left: 0.8rem;
 }
 .topcap {
-  font-size: 1.9vw;
+  padding-top: 0.2rem;
+  font-size: 1.7rem;
   color: #bbb;
 }
 .botcap {
-  padding-top: 0.2rem;
-  font-size: 1.4vw;
+  padding-top: 0.1rem;
+  font-size: 1.3rem;
   color: #999;
 }
 
-@media all and (max-aspect-ratio: 3/4) {
-  .below {
-    height: 12vw;
-  }
-  .topcap, .botcap {
-    max-width: 43vw;
-    max-height: 5vw;
-    padding-top: 0.7vw;
-    padding-left: 3.4vw;
-  }
-  .topcap {
-    font-size: 3.8vw;
-    padding-top: 1.3vw;
-  }
-  .botcap {
-    font-size: 2.8vw;
-  }
-  .targets, .svg-buttons {
-    width: 12vw;
-    height: 12vw;
+@media all and (max-aspect-ratio: 5/4) {
+  img.full {
+    width: 100vw;
+    height: calc(86vh - 12vh);
+    object-fit: contain;
   }
   .caps {
-    width: 47vw;
-    height: 12vw;
+    height: 12vh;
   }
-}
-
-@media all and (max-aspect-ratio: 9/16) {
-  .big img.full {
-    padding-top: 40vw;
-    margin: 0;
-    width: 100vw;
-    height: 56.3vw;
-  }
-}
-
-@media all and (min-aspect-ratio: 9/16) and (max-aspect-ratio: 3/4) {
-  .big img.full {
-    padding-top: 30vw;
-    margin: 0;
-    width: 100vw;
-    height: 56.3vw;
-  }
-}
-
-@media all and (min-aspect-ratio: 3/4) and (max-aspect-ratio: 10/10) {
-  .big img.full {
-    padding-top: 20vw;
-    margin: 0;
-    width: 100vw;
-    height: 56.3vw;
-  }
-}
-
-@media all and (min-aspect-ratio: 10/10) and (max-aspect-ratio: 13/10) {
-  .big img.full {
-    padding-top: 5vw;
-    margin: 0;
-    width: 100vw;
-    height: 56.3vw;
-  }
-}
-
-@media all and (min-aspect-ratio: 3/4) and (max-aspect-ratio: 10/10) {
   .below {
-    height: 9vw;
+    height: 12vh;
   }
   .topcap, .botcap {
-    max-width: 55vw;
-    max-height: 3.6vw;
-    padding-top: 0.6vw;
-    padding-left: 3.4vw;
+    width: calc(86vh - 13vh);
+    overflow: hidden;
   }
-  .topcap {
-    font-size: 3vw;
-    padding-top: 0.8vw;
+  .break-visibility {
+    display: block;
   }
-  .botcap {
-    font-size: 2.4vw;
+}
+
+@media all and (min-aspect-ratio: 5/4) {
+  img.full {
+    width: 100vw;
+    height: calc(92vh - 6vh);
+    object-fit: contain;
   }
-  .targets, .svg-buttons {
-    width: 9vw;
-    height: 9vw;
+  .topcap, .botcap {
+    width: calc(100vw - 25vh);
+    display: inline;
   }
   .caps {
-    width: 59vw;
-    height: 9vw;
+    width: calc(100vw - 25vh);
   }
-}
-
-
-@media all and (min-aspect-ratio: 13/10) and (max-aspect-ratio: 14/10) {
-  .big img.full {
-    padding: 0;
-    margin: 0;
-    width: 100vw;
-    height: 56.3vw;
+  .below {
+    height: 6vh;
   }
-}
-@media all and (min-aspect-ratio: 14/10) and (max-aspect-ratio: 31/20) {
-  .big img.full {
-    padding: 0;
-    margin: 0;
-    padding-left: 2vw;
-    width: 96vw;
-    height: 54vw;
-  }
-}
-/* 1.55+ (e.g. 16:10 and 16:9 = 1.6 and 1.777 */
-@media all and (min-aspect-ratio: 31/20) and (max-aspect-ratio: 18/10) {
-  .big img.full {
-    padding: 0;
-    margin: 0;
-    padding-left: 6vw;
-    width: 87.64vw;
-    height: 49.3vw;
-  }
-}
-
-@media all and (min-aspect-ratio: 18/10) and (max-aspect-ratio: 19/10) {
-  .big img.full {
-    padding: 0;
-    margin: 0;
-    padding-left: 8vw;
-    width: 84vw;
-    height: 47.25vw;
-  }
-}
-
-@media all and (min-aspect-ratio: 19/10) and (max-aspect-ratio: 2/1) {
-  .big img.full {
-    padding: 0;
-    margin: 0;
-    padding-left: 10vw;
-    width: 80vw;
-    height: 45vw;
-  }
-}
-/* wider than expected in terms of device aspect ratio or typical window aspect -- user can probably adjust their window! */
-@media all and (min-aspect-ratio: 2/1) {
-  .big img.full {
-    padding: 0;
-    margin: 0;
-    padding-left: 20vw;
-    width: 60vw;
-    height: 33.75vw;
+  .break-visibility {
+    display: none;
   }
 }
 

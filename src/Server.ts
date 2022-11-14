@@ -397,35 +397,52 @@ export default class Server {
     });
   }
 
-  // each item is { args: '...', fout: '...' }  where fout is full path to output image
-  addWork(e, work) {
-    var pre = this.basesrc;
-    if (pre.charAt(pre.length - 1) == '/') {
-      console.log('Expected not to have a trailing slash! '+pre);
-      process.exit(1);
+    // each item is { args: '...', fout: '...' }  where fout is full path to output image
+    addWork(e, work) {
+      var pre = this.basesrc;
+      if (pre.charAt(pre.length - 1) == '/') {
+        console.log('Expected not to have a trailing slash! '+pre);
+        process.exit(1);
+      }
+      pre = pre + '/';
+      var pub = this.baseout;
+      if (pub.charAt(pre.length - 1) == '/') {
+        console.log('Expected not to have a trailing slash! '+pub);
+        process.exit(1);
+      }
+      let watermark = this.settings.pathToWatermark();
+      // TODO deal with case of no watermark or file not found...
+      const watermarkCmd = watermark ? " -gravity South "+watermark+" -compose Over -composite " : " ";
+      pub = pub + '';
+  
+      // const out1 = pub+"/160."+e;
+      // // note no space between pre+e+"[160x90]" -- add a space on pain of death!
+      // work.push({fout:out1, args: pre+e+"[160x90] -auto-orient -thumbnail 160x90 -background #404044 -sharpen 1 -gravity Center -extent 160x90 "+out1});
+      // const out2 = pub+"/1920."+e;
+      // work.push({fout:out2, args: "-auto-orient -quality 83 -resize 1920x1080> -background #404044 -gravity Center -sharpen 1 -extent 1920x1080 " + pre+e + watermarkCmd + out2});
+  
+      // for reference:
+      //1920/12 = 160
+      //1080/12 = 90
+      //
+      // out3 @ 130x100
+      // 1560/12 = 130
+      // 1200/12 = 100
+      const out3 = pub+"/130."+e;
+      // note no space between pre+e+"[100x130]" -- add a space on pain of death!
+      work.push({fout:out3, args: pre+e+"[130x130] -auto-orient -thumbnail 130x130 -sharpen 1 -gravity Center "+out3});
+      // out4 @ 1200x1560
+      // 1560/1200 = 1.3 or 13x10
+      const out4 = pub+"/1560."+e;
+      work.push({fout:out4, args: "-auto-orient -quality 83 -resize 1560x1560> -gravity Center -sharpen 1 " + pre+e + watermarkCmd + out4});
+  
+      for (const grav of 'c n s e w'.split(' ')) {
+        const out3 = pub+"/sq"+grav+"."+e;
+        work.push({fout:out3, args: pre + e + ' -auto-orient -resize 256x256^ -sharpen 1 -gravity '+gravD[grav]+' -crop 256x256+0+0 '+out3});
+        const out4 = pub+"/sq"+grav+"."+e+'.png'
+        work.push({fout:out4, args: pre + e + ' -auto-orient -resize 4x4^ -sharpen 1 -gravity '+gravD[grav]+' -crop 4x4+0+0 '+out4});
+      }
     }
-    pre = pre + '/';
-    var pub = this.baseout;
-    if (pub.charAt(pre.length - 1) == '/') {
-      console.log('Expected not to have a trailing slash! '+pub);
-      process.exit(1);
-    }
-    let watermark = this.settings.pathToWatermark();
-    // TODO deal with case of no watermark or file not found...
-    const watermarkCmd = watermark ? " -gravity South "+watermark+" -compose Over -composite " : " ";
-    pub = pub + '';
-    const out1 = pub+"/160."+e;
-    // note no space between pre+e+"[160x90]" -- add a space on pain of death!
-    work.push({fout:out1, args: pre+e+"[160x90] -auto-orient -thumbnail 160x90 -background #404044 -sharpen 1 -gravity Center -extent 160x90 "+out1});
-    const out2 = pub+"/1920."+e;
-    work.push({fout:out2, args: "-auto-orient -quality 83 -resize 1920x1080> -background #404044 -gravity Center -sharpen 1 -extent 1920x1080 " + pre+e + watermarkCmd + out2});
-    for (const grav of 'c n s e w'.split(' ')) {
-      const out3 = pub+"/sq"+grav+"."+e;
-      work.push({fout:out3, args: pre + e + ' -auto-orient -resize 256x256^ -sharpen 1 -gravity '+gravD[grav]+' -crop 256x256+0+0 '+out3});
-      const out4 = pub+"/sq"+grav+"."+e+'.png'
-      work.push({fout:out4, args: pre + e + ' -auto-orient -resize 4x4^ -sharpen 1 -gravity '+gravD[grav]+' -crop 4x4+0+0 '+out4});
-    }
-  }
 
   public convertThumbnails(numcores, allDone) {
     var work = [];
@@ -436,7 +453,6 @@ export default class Server {
       }
       this.addWork(file, work);
     });
-    //console.log(work);
 
     var dots = 0;
     async.forEachOfLimit(work, numcores|0,
