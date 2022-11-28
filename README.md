@@ -120,3 +120,79 @@ machine.
 - Execute npm install -- to get Electron, React, jQuery packages installed into node_modules
 - Execute ./build.sh to create build/ and compile .ts to .js files, etc.
 - Run ./run.sh to launch Electron app.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+IMAGE MAGICK CONVERT static commandline build stuff
+
+531  IMBUILD=/tmp/imbuild
+  532  mkdir $IMBUILD
+  533  mkdir im_download && cd im_download
+  534  curl -O http://www.imagemagick.org/download/ImageMagick.tar.gz
+  535  ls
+  536  tar zxvf ImageMagick.tar.gz 
+  537  ls
+  538  cd ImageMagick
+  539  cd ImageMagick-*
+  540  ls
+  541  cd ..
+  542  ls
+  543  rm ImageMagick.tar.gz 
+  544  cd ImageMagick-7.0.7-4/
+  545  ls
+  546  curl -O http://www.imagemagick.org/download/delegates/libpng-1.6.24.tar.gz
+  547  ls
+  548  tar ztvf libpng-1.6.24.tar.gz 
+  549* rm libpng-1.6.31.tar.gz 
+  550  curl -O http://www.imagemagick.org/download/delegates/libpng-1.6.31.tar.gz
+  551  curl -O http://www.imagemagick.org/download/delegates/jpegsrc.v9b.tar.gz
+  552  tar zxvf libpng-1.6.31.tar.gz 
+  553  tar zxvf jpegsrc.v9b.tar.gz 
+  554  ls -la
+  555  rm jpeg*.tar.gz
+  556  rm libpng-1.6.31.tar.gz 
+  557  ls -la
+  558  cd jpeg-9b/
+  559  ls
+  560  cd ..
+  561  ls
+  562  cd libpng-1.6.31/
+  563  ls
+  564  cd ..
+  565  ls
+  566  mv libpng-1.6.31/ png
+  567  cd png
+  568  ./configure --disable-shared --disable-dependency-tracking && make
+  569  cd ..
+  570  ls
+  571  mv jpeg-9b/ jpeg
+  572  cd jpeg/
+  573  ls
+  574  ./configure --disable-shared --disable-dependency-tracking && make
+  575  ./configure --disable-shared --disable-dependency-tracking --enable-delegate-build --disable-installed --without-frozenpaths --prefix $IMBUILD --with-openexr=no --disable-docs --without-lcms --without-x --without-webp --without-jpeg --without-pango --enable-hdri=no --without-gvc
+  576  ./configure --disable-shared --disable-dependency-tracking --enable-delegate-build --disable-installed --without-frozenpaths --prefix $IMBUILD --with-openexr=no --disable-docs --without-lcms --without-x --without-webp --without-freetype --without-pango --enable-hdri=no --without-gvc
+  577  ./configure --disable-shared --disable-dependency-tracking && make
+  578  make
+  579  cd ..
+  580  ./configure --disable-shared --disable-dependency-tracking --enable-delegate-build --disable-installed --without-frozenpaths --prefix $IMBUILD --with-openexr=no --disable-docs --without-lcms --without-x --without-webp --without-freetype --without-pango --enable-hdri=no --without-gvc
+  581  ./configure --disable-shared --disable-dependency-tracking --enable-delegate-build --disable-installed --without-frozenpaths --prefix $IMBUILD --with-openexr=no --disable-docs --without-lcms --without-x --without-webp --without-freetype --without-pango --enable-hdri=no --without-gvc --without-tiff --without-mpeg --without-fontconfig
+  582  history | less
+
+  
