@@ -8,6 +8,7 @@ export interface AlbumProps {
   url: string;
   hostRoot: string;
   thumbsUrlBase: string;
+  showUrlWindow: (url: string) => void;
 }
 export interface AlbumState {
   data: any
@@ -23,7 +24,7 @@ export class EditAlbum extends React.Component<AlbumProps, AlbumState> {
   render() {
     var picNodes = this.state.data.list.map((pic) => {
       return (
-        <Pic key={pic.fname} thumbsUrlBase={this.props.thumbsUrlBase} hostRoot={this.props.hostRoot}
+        <Pic key={pic.fname} showUrlWindow={this.props.showUrlWindow} thumbsUrlBase={this.props.thumbsUrlBase} hostRoot={this.props.hostRoot}
              fname={pic.fname} desc={pic.desc} title={pic.title} />
       );
     });
@@ -36,7 +37,8 @@ export class EditAlbum extends React.Component<AlbumProps, AlbumState> {
 }
 
 interface PicProps {
-  hostRoot, thumbsUrlBase, title, desc, fname: string
+  hostRoot, thumbsUrlBase, title, desc, fname: string;
+  showUrlWindow: (url: string) => void;
 }
 interface PicState {
   desc, title, fname: string
@@ -64,10 +66,15 @@ class Pic extends React.Component<PicProps, PicState> {
         this.setState(data);
       });
   }
+  picOnClickFunc(props) {
+    let urlToBigImg = props.hostRoot + props.thumbsUrlBase + '1560.' + props.fname;
+    console.log("want to open window with URL =", urlToBigImg);
+    props.showUrlWindow(urlToBigImg);
+  }
   render() {
     return (
       <div className="pic">
-        <img src={MyCode.makethumburl(this.props.hostRoot + this.props.thumbsUrlBase, this.state.fname, this.state.desc)} />
+        <img onClick={() => this.picOnClickFunc(this.props)} src={MyCode.makethumburl(this.props.hostRoot + this.props.thumbsUrlBase, this.state.fname, this.state.desc)} />
         <Caption initValue={this.state.title ? this.state.title : ""} onDone={(arg) => this.handleCaptionDone('title', arg)} />
         <Caption initValue={this.state.desc ? this.state.desc : "g=c"} onDone={(arg) => this.handleCaptionDone('desc', arg)} />
       </div>

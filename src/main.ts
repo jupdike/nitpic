@@ -199,6 +199,23 @@ function funcIndexPageLoadedOrOpenFolder(event, requestUserPickFolder) {
   });
 }
 
+ipc.on('show-url-window', openUrlWindow);
+function openUrlWindow(event, url) {
+  console.log('main page wants to show url:', url);
+
+  var newIndex = windows.length;
+  var wind = new BrowserWindow({width: 1160, height: 700})
+  wind.setMinimumSize(1160, 600);
+  windows.push(wind);
+
+  // Emitted when the window is closed.
+  wind.on('closed', () => {
+    windows[newIndex] = null; // null out the reference where the .push just added it (keep all the indices the same, however)
+  })
+
+  wind.loadURL(url);
+}
+
 ipc.on('show-preview', openPreview);
 function openPreview(event) {
   console.log("main should show a preview window");
