@@ -1,4 +1,4 @@
-const {app, BrowserWindow, Menu} = require('electron')
+const {app, BrowserWindow, Menu, shell} = require('electron')
 const path = require('path')
 const url = require('url')
 const fs = require('fs')
@@ -12,7 +12,8 @@ import NitpicSettings from './NitpicSettings'
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let win
+let win = null;
+let windows = [];
 
 // on Mac this is /Users/jupdike/Library/Application Support/nitpic/Settings/
 function getAppDataPath() {
@@ -35,9 +36,33 @@ function createWindow() {
     label: "Application",
     submenu: [
         { label: "About Application", selector: "orderFrontStandardAboutPanel:" },
-        { type: "separator" },
+        { type: 'separator' },
+        { label: 'Services', submenu: [] },
+        { type: 'separator' },
+        {
+          label: 'Hide Nitpic',
+          accelerator: 'Command+H',
+          selector: 'hide:',
+        },
+        {
+          label: 'Hide Others',
+          accelerator: 'Command+Shift+H',
+          selector: 'hideOtherApplications:',
+        },
+        { label: 'Show All', selector: 'unhideAllApplications:' },
+        { type: 'separator' },
         { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
-    ]}, {
+    ]},
+    {
+      label: "File",
+      submenu: [
+          { label: "Open Folder...", accelerator: "CmdOrCtrl+O", click: function() { funcIndexPageLoadedOrOpenFolder(null, true); } },
+          { label: "Preview", accelerator: "CmdOrCtrl+T", click: function() { openPreview(null); } },
+          { label: "Publish", accelerator: "CmdOrCtrl+P", click: function() { openPublish(null); } },
+          { type: 'separator' },
+          { label: 'Close Window', accelerator: 'CmdOrCtrl+W', selector: 'performClose:' },
+      ]},
+    {
     label: "Edit",
     submenu: [
         { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
@@ -47,7 +72,72 @@ function createWindow() {
         { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
         { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
         { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
-    ]}
+    ]},
+    {
+      label: 'View',
+      submenu: [
+        {
+          label: 'Reload',
+          accelerator: 'CmdOrCtrl+R',
+          click: () => {
+            win.webContents.reload();
+          },
+        },
+        {
+          label: 'Toggle Full Screen',
+          accelerator: 'Ctrl+Command+F',
+          click: () => {
+            let w = win
+            for(let i = 0; i < windows.length; i++) {
+              if(windows[i] != null) {
+                w = windows[i];
+                break;
+              }
+            }
+            w.setFullScreen(!w.isFullScreen());
+          },
+        },
+        {
+          label: 'Toggle Developer Tools',
+          accelerator: 'Alt+CmdOrCtrl+I',
+          click: () => {
+            // toggle all windows' dev tools
+            win.webContents.toggleDevTools();
+            windows.forEach((w) => {
+              if(!w) { return; } // these get nulled out... weird approach
+              w.webContents.toggleDevTools();
+            });
+          },
+        },
+      ],
+    },
+    {
+      label: 'Window',
+      submenu: [
+        {
+          label: 'Minimize',
+          accelerator: 'CmdOrCtrl+M',
+          selector: 'performMiniaturize:',
+        },
+        {
+          label: 'Zoom',
+          accelerator: 'CmdOrCtrl+N',
+          selector: 'performZoom:',
+        },
+        { type: 'separator' },
+        { label: 'Bring All to Front', selector: 'arrangeInFront:' },
+      ],
+    },
+    {
+      label: 'Help',
+      submenu: [
+        {
+          label: 'Nitpic Help...',
+          accelerator: 'CmdOrCtrl+H',
+          click: () => { shell.openExternal("https://github.com/jupdike/nitpic2/"); },
+        },
+      ]
+    }
   ];
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 
@@ -76,7 +166,7 @@ function createWindow() {
     protocol: 'file:',
     slashes: true
   }))
-  win.webContents.openDevTools()
+  //win.webContents.openDevTools() // not needed because of menu and kb shortcut
 }
 
 // this doesn't exist because there may be more than one window but there is always only one main process for the renderer (browser window) processes to talk to
@@ -85,9 +175,11 @@ function ipc_send(msg, ...args) {
   win.webContents.send(msg, ...args); // WTF dumb-asses --- violates the principal of least surprise
 }
 
-ipc.on('index-page-loaded', (event, requestUserPickFolder) => {
+ipc.on('index-page-loaded', funcIndexPageLoadedOrOpenFolder);
+// vvvvv (so we can call from elsewhere in code too)
+function funcIndexPageLoadedOrOpenFolder(event, requestUserPickFolder) {
   console.error('index page loaded!');
-  console.error(requestUserPickFolder);
+  console.error('requestUserPickFolder:', requestUserPickFolder);
   if (requestUserPickFolder) {
     if (settings.openFolder()) {
       settings.saveSettings();
@@ -105,10 +197,10 @@ ipc.on('index-page-loaded', (event, requestUserPickFolder) => {
       ipc_send('metadata-read');
     });
   });
-});
+}
 
-var windows = [];
-ipc.on('show-preview', (event) => {
+ipc.on('show-preview', openPreview);
+function openPreview(event) {
   console.log("main should show a preview window");
 
   server.writeoutMetadataJsonEtc('http://localhost:3000/static/', 'index.json');
@@ -128,10 +220,11 @@ ipc.on('show-preview', (event) => {
     protocol: 'file:',
     slashes: true
   }))
-  wind.webContents.openDevTools()
-});
+  //wind.webContents.openDevTools()
+}
 
-ipc.on('show-publish', (event) => {
+ipc.on('show-publish', openPublish);
+function openPublish(event) {
   console.log("main should show a publish window");
 
   server.writeoutMetadataJsonEtc('http://localhost:3000/static/', 'index.json');
@@ -151,8 +244,8 @@ ipc.on('show-publish', (event) => {
     protocol: 'file:',
     slashes: true
   }))
-  wind.webContents.openDevTools()
-});
+  //wind.webContents.openDevTools()
+}
 
 app.on('ready', createWindow)
 
@@ -160,9 +253,12 @@ app.on('ready', createWindow)
 app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
+
+  // ... but this causes a crashy problem with no main window, so just quit the app and all is less confusing...
+
+  //if (process.platform !== 'darwin') {
     app.quit()
-  }
+  //}
 })
 
 app.on('activate', () => {
