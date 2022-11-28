@@ -134,7 +134,7 @@ function createWindow() {
         {
           label: 'Nitpic Help...',
           accelerator: 'CmdOrCtrl+H',
-          click: () => { shell.openExternal("https://github.com/jupdike/nitpic2/"); },
+          click: () => { shell.openExternal("https://github.com/jupdike/nitpic/"); },
         },
       ]
     }
