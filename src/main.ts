@@ -223,7 +223,7 @@ function openPreview(event) {
 
   var newIndex = windows.length;
   var wind = new BrowserWindow({width: 1160, height: 700})
-  wind.setMinimumSize(1160, 600);
+  wind.setMinimumSize(440, 440);
   windows.push(wind);
 
   // Emitted when the window is closed.
