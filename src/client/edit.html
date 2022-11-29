@@ -42,9 +42,9 @@
     <!-- Dependencies -->
     <script src="./third-party/react.js"></script>
     <script src="./third-party/react-dom.js"></script>
-    <!-- script src="./third-party/jquery.js"></script -->
+    <script src="./third-party/jquery.js"></script>
     <script>
-      window.$ = window.jQuery = require('./third-party/jquery.js')
+      // window.$ = window.jQuery = require('./third-party/jquery.js')
     </script>
 
     <!-- Main -- Electron + Webpack = :-( -->
@@ -63,7 +63,7 @@
         console.log("clicked Open Folder");
         ipc.send('index-page-loaded', true); // DO ask user to pick an album
       });
-      const ipc = require('electron').ipcRenderer;
+      const ipc = window.electronIpcAPI; //require('electron').ipcRenderer;
       ipc.send('index-page-loaded', false); // don't ask user to pick an album
       var lastAngle = 0;
       ipc.on('progress-update', (event, arg) => {

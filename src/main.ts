@@ -149,7 +149,7 @@ function createWindow() {
   server = new Server(ipc_send, settings);
 
   // Create the browser window.
-  win = new BrowserWindow({width: 1160, height: 800})
+  win = new BrowserWindow({width: 1160, height: 800, webPreferences: webPreferences, })
   win.setMinimumSize(1160, 600);
 
   // Emitted when the window is closed.
@@ -203,7 +203,7 @@ function openUrlWindow(event, url) {
   console.log('main page wants to show url:', url);
 
   var newIndex = windows.length;
-  var wind = new BrowserWindow({width: 1160, height: 700})
+  var wind = new BrowserWindow({width: 1160, height: 700, webPreferences: webPreferences, })
   wind.setMinimumSize(1160, 600);
   windows.push(wind);
 
@@ -215,6 +215,10 @@ function openUrlWindow(event, url) {
   wind.loadURL(url);
 }
 
+let webPreferences = {
+  preload: path.join(__dirname, 'preload.js'),
+}
+
 ipc.on('show-preview', openPreview);
 function openPreview(event) {
   console.log("main should show a preview window");
@@ -222,7 +226,7 @@ function openPreview(event) {
   server.writeoutMetadataJsonEtc('http://localhost:3000/static/', 'index.json');
 
   var newIndex = windows.length;
-  var wind = new BrowserWindow({width: 1160, height: 700})
+  var wind = new BrowserWindow({width: 1160, height: 700, webPreferences: webPreferences, })
   wind.setMinimumSize(440, 440);
   windows.push(wind);
 
@@ -246,7 +250,7 @@ function openPublish(event) {
   server.writeoutMetadataJsonEtc('http://localhost:3000/static/', 'index.json');
   
   var newIndex = windows.length;
-  var wind = new BrowserWindow({width: 800, height: 700})
+  var wind = new BrowserWindow({width: 800, height: 700, webPreferences: webPreferences, })
   wind.setMinimumSize(800, 600);
   windows.push(wind);
 

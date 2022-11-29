@@ -16,7 +16,7 @@ cp src/client/*.html build/client/
 cp src/client/scripts/*.js build/client/scripts/
 #cp *.png build/
 
-mkdir -p /Users/jupdike/Documents/dev/nitpic/node_modules/electron/dist/Nitpic.app/Contents/Resources/app/build/
-cp package.json /Users/jupdike/Documents/dev/nitpic/node_modules/electron/dist/Nitpic.app/Contents/Resources/app/
-cp -R build/ /Users/jupdike/Documents/dev/nitpic/node_modules/electron/dist/Nitpic.app/Contents/Resources/app/build/
-ln -s /Users/jupdike/Documents/dev/nitpic/node_modules /Users/jupdike/Documents/dev/nitpic/node_modules/electron/dist/Nitpic.app/Contents/Resources/app/node_modules
+mkdir -p /Users/jupdike/Documents/dev/nitpic-dist/Nitpic.app/Contents/Resources/app/build/
+cp package.json /Users/jupdike/Documents/dev/nitpic-dist/Nitpic.app/Contents/Resources/app/
+cp -R build/ /Users/jupdike/Documents/dev/nitpic-dist/Nitpic.app/Contents/Resources/app/build/
+ln -s /Users/jupdike/Documents/dev/nitpic/node_modules /Users/jupdike/Documents/dev/nitpic-dist/Nitpic.app/Contents/Resources/app/node_modules
