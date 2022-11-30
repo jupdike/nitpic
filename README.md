@@ -113,7 +113,21 @@ and then was acqui-hired by Twitter and "sunsetted" like a two-legged horse. And
 why do people hand over their best work to Medium? You are feeding their VC-backed
 machine.
 
-## Developer Setup
+## Developer Setup (only way to use this currently, sadly...)
+
+Edit `~/Library/Application\ Support/nitpic/Settings/nitpic.json`
+
+Here is an example:
+
+```
+{
+  "inputRootDir": "/Users/jupdike/Dropbox/PhotoAlbums",
+  "outputRootDir": "/Users/jupdike/Dropbox/PhotoPublishing",
+  "albumName": "Photo Album Example Folder Name in inputRootDir"
+}
+```
+
+Then
 
 - brew install imagemagick
 - brew install exiv2 (or from source... hmmm... double check this)

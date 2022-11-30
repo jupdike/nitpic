@@ -251,6 +251,7 @@ export default class Server {
     fs.writeFileSync(f2, html);
   }
 
+  public noPub = false
   openFolder() {
     this.basesrc = path.join(this.settings.inputRootDir(), this.settings.albumName());
     this.baseout = path.join(this.settings.outputRootDir(), this.settings.albumName());
@@ -262,6 +263,11 @@ export default class Server {
     }
       catch (e) {
     }
+    var combined = path.join(this.basesrc, "_no_pub");
+    console.log('Does', combined, 'exist?');
+    this.noPub = this.fileExists(combined);
+    console.log('noPub:', this.noPub);
+
     this.state = { list: [], bykey: {}, index: 0, key: 0 };
   }
 

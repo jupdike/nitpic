@@ -189,6 +189,7 @@ function funcIndexPageLoadedOrOpenFolder(event, requestUserPickFolder) {
     }
   }
   ipc_send("progress-update", {progress: 0, message: "Ready"});
+  ipc_send("update-publish-button", {noPub: server.noPub});
   ipc_send("progress-update", {folderName: settings.albumName()});
   server.convertThumbnails(numcores, () => {
     server.readMetadata( () => {

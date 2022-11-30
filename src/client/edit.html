@@ -66,6 +66,13 @@
       const ipc = window.electronIpcAPI; //require('electron').ipcRenderer;
       ipc.send('index-page-loaded', false); // don't ask user to pick an album
       var lastAngle = 0;
+      ipc.on('update-publish-button', (event, arg) => {
+        if(arg.noPub && arg.noPub === true) {
+          $("#publish").hide();
+        } else {
+          $("#publish").show();
+        }
+      });
       ipc.on('progress-update', (event, arg) => {
         if (arg.folderName) {
           $("#folder-name").html(arg.folderName);
