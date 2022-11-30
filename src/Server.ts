@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const express = require('express')
+const ws = require('ws')
 const bodyParser = require('body-parser')
 const split = require('split')
 const {execFile} = require('child_process')
@@ -8,7 +9,11 @@ const async = require('async')
 var pngparse = require("pngparse")
 import Shared from './client/scripts/Shared'
 import NitpicSettings from './NitpicSettings'
+import * as readline from 'readline';
 
+const termtest = "/Users/jupdike/Documents/dev/nitpic/term-test.py"
+const s3pub = "/Users/jupdike/bin/s3pub"
+const s3cmd = "/usr/local/bin/s3cmd"
 const exiv2 = "/Users/jupdike/exiv2" // TODO need a way to package this in Electron bundle and reference it
 //const convert = "/bin/echo" // just for hack / testing
 const convert = "/usr/local/bin/convert" // ditto
@@ -187,6 +192,7 @@ export default class Server {
 
   state: any
   sapp = express();
+  sockets = [];
 
   baseout: string;
   basesrc: string;
@@ -259,6 +265,10 @@ export default class Server {
     this.state = { list: [], bykey: {}, index: 0, key: 0 };
   }
 
+  sendToAllSockets(line) {
+    this.sockets.forEach(s => s.send(line));
+  }
+
   init() {
     
     this.sapp.set('port', (process.env.PORT || 3000));
@@ -288,9 +298,31 @@ export default class Server {
       let idName = 'gal-' + this.settings.albumName().toLowerCase().replace(/ /g, '-')
       let cmdStr = `(cd ${this.settings.outputRootDir()} && ~/bin/s3pub ${this.settings.albumName()} s3://${this.settings.s3bucketname()}/${publishFolder}/)`
       let htmlSnip = `<div id="${idName}" class="contents"></div>\n<script>\n  RenderSide.RenderClass.RenderGalleryAlbum(\n  'https://${this.settings.s3bucketname()}.s3-us-west-2.amazonaws.com/${publishFolder}/${this.settings.albumName()}/',\n  'index.json',\n  '${idName}');\n</script>\n<br/>`
-      let pre1 = cmdStr
-      let pre2 = htmlSnip.replace(/\</g,'&lt;').replace(/\>/g,'&gt;');
-      res.send('<pre>'+pre1+'</pre><br/><pre>'+pre2+'</pre>');
+      let preHtmlChunk = htmlSnip.replace(/\</g,'&lt;').replace(/\>/g,'&gt;');
+      res.send('<pre>'+preHtmlChunk+'</pre><br/><hr/><h2>Command to Execute</h2><br/><pre id="cmd">'+cmdStr+'</pre>');
+
+      // hurray, now replace with call to       execFile(cmdStr but split into array, etc.)
+      let resultProcess = execFile(s3pub, [
+        this.settings.albumName(),
+        `s3://${this.settings.s3bucketname()}/${publishFolder}/`,
+      ], {
+        //"encoding": "buffer",
+        "cwd": this.settings.outputRootDir(),
+      }, (error, stdout, stderr) => {
+        // TODO send every line from stdout and stderr to this.sendToAllSockets(line)
+      });
+      const rl1 = readline.createInterface(resultProcess.stdout);
+      const rl2 = readline.createInterface(resultProcess.stderr);
+      let serv = this;
+      rl1.on('line', (line) => {
+        //console.log(`stdout: ${line}`);
+        serv.sendToAllSockets(line);
+      });
+      rl2.on('line', (line) => {
+        //console.log(`stderr: ${line}`);
+        serv.sendToAllSockets(line);
+      });
+
     });
 
     this.sapp.post('/api/pics', (req, res) => {
@@ -359,9 +391,27 @@ export default class Server {
       res.sendFile(full);
     });
 
-    this.sapp.listen(this.sapp.get('port'), () => {
+    const wsServer = new ws.Server({ noServer: true });
+    wsServer.on('connection', socket => {
+      this.sockets.push(socket);
+
+      console.log("*** Got a connection from the browser, over a socket!");
+
+      //this.sendToAllSockets("test1234321");
+
+      // client sends something to the server over a socket
+      socket.on('message', message => console.log(message));
+    });
+
+    let server = this.sapp.listen(this.sapp.get('port'), () => {
       console.log('Server started: http://localhost:' + this.sapp.get('port') + '/');
     });
+    server.on('upgrade', (request, socket, head) => {
+      wsServer.handleUpgrade(request, socket, head, socket => {
+        wsServer.emit('connection', socket, request);
+      });
+    });
+
   }
 
   // make thumbnails

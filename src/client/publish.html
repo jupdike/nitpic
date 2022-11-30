@@ -10,19 +10,28 @@
     <!-- Dependencies -->
     <script src="./third-party/react.js"></script>
     <script src="./third-party/react-dom.js"></script>
-    <!-- script src="./third-party/jquery.js"></script -->
+    <script src="./third-party/jquery.js"></script>
     <script>
-      window.$ = window.jQuery = require('./third-party/jquery.js')
+      // window.$ = window.jQuery = require('./third-party/jquery.js')
+      window.socket = new WebSocket("ws://localhost:3000")
     </script>
 
     <!-- Main -- Electron + Webpack = :-( -->
     <script src="./bundle.js"></script>
 
+    <h2 style="color: #aaa">HTML Snippet</h2>
     <div id="publish-container">
       TODO put some contents here
     </div>
 
+    <h2 style="color: #aaa">Console Output</h2>
+    <pre id="publish-cmd" style="color: black; background-color: white;"></pre>
+
     <script>
+      window.socket.addEventListener('message', (event) => {
+        console.log('Message from server ', event.data);
+        $('#publish-cmd').append(event.data+'<br/>');
+      });
       var url = 'http://localhost:3000/api/publish-summary'
       window.$.ajax({
         url: url,
