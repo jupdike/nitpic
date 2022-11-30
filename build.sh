@@ -20,3 +20,5 @@ mkdir -p /Users/jupdike/Documents/dev/nitpic-dist/Nitpic.app/Contents/Resources/
 cp package.json /Users/jupdike/Documents/dev/nitpic-dist/Nitpic.app/Contents/Resources/app/
 cp -R build/ /Users/jupdike/Documents/dev/nitpic-dist/Nitpic.app/Contents/Resources/app/build/
 ln -s /Users/jupdike/Documents/dev/nitpic/node_modules /Users/jupdike/Documents/dev/nitpic-dist/Nitpic.app/Contents/Resources/app/node_modules
+
+exit 0

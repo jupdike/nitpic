@@ -130,7 +130,7 @@ export default class NitpicSettings {
   }
 
   chooseDir(s: string, defaultDir=null): Array<string> {
-    return dialog.showOpenDialog(this.with('defaultPath', defaultDir,
+    return dialog.showOpenDialogSync(this.with('defaultPath', defaultDir,
     { title: 'Select '+s, properties: ['openDirectory'] }));
   }
 }
