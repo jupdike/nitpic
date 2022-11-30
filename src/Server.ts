@@ -12,7 +12,7 @@ import NitpicSettings from './NitpicSettings'
 import * as readline from 'readline';
 
 const termtest = "/Users/jupdike/Documents/dev/nitpic/term-test.py"
-const s3pub = "/Users/jupdike/bin/s3pub"
+//const s3pub = "/Users/jupdike/bin/s3pub"
 const s3cmd = "/usr/local/bin/s3cmd"
 const exiv2 = "/Users/jupdike/exiv2" // TODO need a way to package this in Electron bundle and reference it
 //const convert = "/bin/echo" // just for hack / testing
@@ -296,24 +296,27 @@ export default class Server {
       let publishFolderPieces = this.baseout.replace(/\\/g,'/').split('/');
       let publishFolder = publishFolderPieces[publishFolderPieces.length-2];
       let idName = 'gal-' + this.settings.albumName().toLowerCase().replace(/ /g, '-')
-      let cmdStr = `(cd ${this.settings.outputRootDir()} && ~/bin/s3pub ${this.settings.albumName()} s3://${this.settings.s3bucketname()}/${publishFolder}/)`
+      let cmdStr = `(cd ${this.settings.outputRootDir()} && s3cmd --acl-public sync ${this.settings.albumName()} s3://${this.settings.s3bucketname()}/${publishFolder}/)`
       let htmlSnip = `<div id="${idName}" class="contents"></div>\n<script>\n  RenderSide.RenderClass.RenderGalleryAlbum(\n  'https://${this.settings.s3bucketname()}.s3-us-west-2.amazonaws.com/${publishFolder}/${this.settings.albumName()}/',\n  'index.json',\n  '${idName}');\n</script>\n<br/>`
       let preHtmlChunk = htmlSnip.replace(/\</g,'&lt;').replace(/\>/g,'&gt;');
       res.send('<pre>'+preHtmlChunk+'</pre><br/><hr/><h2>Command to Execute</h2><br/><pre id="cmd">'+cmdStr+'</pre>');
 
-      // hurray, now replace with call to       execFile(cmdStr but split into array, etc.)
-      let resultProcess = execFile(s3pub, [
+      let serv = this;
+      let resultProcess = execFile(s3cmd, [
+        "--acl-public",
+        "sync",
         this.settings.albumName(),
         `s3://${this.settings.s3bucketname()}/${publishFolder}/`,
       ], {
         //"encoding": "buffer",
         "cwd": this.settings.outputRootDir(),
       }, (error, stdout, stderr) => {
-        // TODO send every line from stdout and stderr to this.sendToAllSockets(line)
+        if(!error) {
+          serv.sendToAllSockets("Done.");
+        }
       });
       const rl1 = readline.createInterface(resultProcess.stdout);
       const rl2 = readline.createInterface(resultProcess.stderr);
-      let serv = this;
       rl1.on('line', (line) => {
         //console.log(`stdout: ${line}`);
         serv.sendToAllSockets(line);

@@ -117,31 +117,16 @@ machine.
 
 - brew install imagemagick
 - brew install exiv2 (or from source... hmmm... double check this)
+- brew install s3cmd
+- TODO document that we need to set the full path for each of those binaries
+- TODO document how to make Nitpic.app in parallel `nitpic-dist` folder by copying `node_modules/electron/dist/Electron.app` and renaming a few things and adding .icns file and Info.plist...
 - Execute npm install -- to get Electron, React, jQuery packages installed into node_modules
 - Execute ./build.sh to create build/ and compile .ts to .js files, etc.
 - Run ./run.sh to launch Electron app.
 
+## IMAGE MAGICK CONVERT static commandline build stuff (Work in Progress)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-IMAGE MAGICK CONVERT static commandline build stuff
-
+```
 531  IMBUILD=/tmp/imbuild
   532  mkdir $IMBUILD
   533  mkdir im_download && cd im_download
@@ -194,5 +179,4 @@ IMAGE MAGICK CONVERT static commandline build stuff
   580  ./configure --disable-shared --disable-dependency-tracking --enable-delegate-build --disable-installed --without-frozenpaths --prefix $IMBUILD --with-openexr=no --disable-docs --without-lcms --without-x --without-webp --without-freetype --without-pango --enable-hdri=no --without-gvc
   581  ./configure --disable-shared --disable-dependency-tracking --enable-delegate-build --disable-installed --without-frozenpaths --prefix $IMBUILD --with-openexr=no --disable-docs --without-lcms --without-x --without-webp --without-freetype --without-pango --enable-hdri=no --without-gvc --without-tiff --without-mpeg --without-fontconfig
   582  history | less
-
-  
+```
