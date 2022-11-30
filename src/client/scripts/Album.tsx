@@ -121,6 +121,7 @@ class Caption extends React.Component<CaptionProps, CaptionState> {
     if (this.state.editing)
       return (
         <textarea
+          style={{"font-size": "80%"}}
           rows={4}
           autoFocus
           onKeyDown={this.handleKeyDown}

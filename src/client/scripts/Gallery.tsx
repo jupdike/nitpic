@@ -23,8 +23,8 @@ class Gallery {
     }
     ctx.putImageData(imgData, 0, 0);
 
-    // TODO could resample using custom kernel, deconvolve and make what appears to be a guassian blurred image
-    // as a 160x160 image
+    // TODO could resample using custom kernel, de-convolve and make what appears to be a gaussian blurred image
+    // as a 160x160 image (just do bicubic manually, should be fast enough)
 
     return canvas.toDataURL();
   }
