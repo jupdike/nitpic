@@ -1,5 +1,7 @@
 # Nitpic, a cross-platform photo gallery creation and publication desktop app (Mac, Windows, Linux)
 
+![Colorful, hexagonal Nitpic icon](https://updike-org.s3-us-west-2.amazonaws.com/PhotoPublishing/blog-pics/nitpic-icon.png "Nitpic icon")
+
 ## Nitpic's an Interactive Thumbnailer, Publisher, and Image Captioner
 
 Nitpic assumes you have at least one of two long term goals: archiving high-res originals
