@@ -228,6 +228,7 @@ export default class Server {
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Gallery Preview - Nitpic</title>
     <link rel="stylesheet" href="./nitpic/base.css" />
   </head>
