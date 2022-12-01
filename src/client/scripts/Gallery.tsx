@@ -198,6 +198,92 @@ var nextsvg = <svg xmlns="http://www.w3.org/2000/svg" className="svg-button" vie
                 <path transform="translate(1.8, 1.8),scale(0.85)" style={pathStyle} d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"/>
               </svg>
 
+interface SwipeImgProps {
+  src: string;
+  className: string;
+  onLoad: any;
+  onSwipedRightToLeft?: any;
+  onSwipedLeftToRight?: any;
+  onSwipedTopToBottom?: any;
+  onSwipedBottomToTop?: any;
+  onTapped?: any;
+}
+interface SwipeImgState {
+  startPageX: number;
+  startPageY: number;
+  dx: number;
+  dy: number;
+}
+export class SwipeImg extends React.Component<SwipeImgProps, SwipeImgState> {
+  state: SwipeImgState;
+  constructor(props: SwipeImgProps) {
+    super(props);
+    this.state = { startPageX: -1337, startPageY: -1337, dx: 0, dy: 0 };
+    this.handleTouchStart = this.handleTouchStart.bind(this);
+    this.handleTouchMove = this.handleTouchMove.bind(this);
+    this.handleTouchEnd = this.handleTouchEnd.bind(this);
+  }
+  handleTouchStart(event) {
+    //console.log('touchStart:', event.changedTouches[0].pageX, event.changedTouches[0].pageY);
+    this.setState({startPageX: event.changedTouches[0].pageX, startPageY: event.changedTouches[0].pageY, dx:0, dy: 0});
+  }
+  processPosition(px, py) {
+    let dx = px - this.state.startPageX;
+    let dy = py - this.state.startPageY;
+    // hold onto the dx and dy (with their signs) with the largest magnitudes
+    dx = Math.abs(dx) > Math.abs(this.state.dx) ? dx : this.state.dx;
+    dy = Math.abs(dy) > Math.abs(this.state.dy) ? dy : this.state.dy;
+    this.setState({startPageX: this.state.startPageX, startPageY: this.state.startPageY, dx: dx, dy: dy});
+  }
+  handleTouchMove(event) {
+    //console.log('touchMove:', event.changedTouches[0].pageX, event.changedTouches[0].pageY);
+    this.processPosition(event.changedTouches[0].pageX, event.changedTouches[0].pageY);
+  }
+  handleTouchEnd(event) {
+    //console.log('touchEnd:', event.changedTouches[0].pageX, event.changedTouches[0].pageY);
+    const MINIMUM = 20;
+    let movedEnough = (Math.abs(this.state.dx) + Math.abs(this.state.dy)) > MINIMUM;
+    let horiz = Math.abs(this.state.dx) > Math.abs(this.state.dy);
+    let vert = Math.abs(this.state.dy) > Math.abs(this.state.dx);
+    if(this.state.dx < 0 && horiz && movedEnough) {
+      console.log("call onSwipedRightToLeft");
+      if(this.props.onSwipedRightToLeft) {
+        this.props.onSwipedRightToLeft();
+      }
+    }
+    else if(this.state.dx > 0 && horiz && movedEnough) {
+      console.log("call onSwipedLeftToRight");
+      if(this.props.onSwipedLeftToRight) {
+        this.props.onSwipedLeftToRight();
+      }
+    }
+    else if(this.state.dy < 0 && vert && movedEnough) {
+      console.log("call onSwipedBottomToTop");
+      if(this.props.onSwipedBottomToTop) {
+        this.props.onSwipedBottomToTop();
+      }
+    }
+    else if(this.state.dy > 0 && vert && movedEnough) {
+      console.log("call onSwipedTopToBottom");
+      if(this.props.onSwipedTopToBottom) {
+        this.props.onSwipedTopToBottom();
+      }
+    } else if(!movedEnough) {
+      console.log("call onTapped");
+      if(this.props.onTapped) {
+        this.props.onTapped();
+      }
+    }
+  }
+  render() {
+    return <img className="full" src={this.props.src} onLoad={this.props.onLoad}
+      onTouchStart={this.handleTouchStart}
+      onTouchMove={this.handleTouchMove}
+      onTouchEnd={this.handleTouchEnd}
+      />
+  }
+}
+
 interface BigProps {
   smallLoaded: boolean;
   visible: boolean;
@@ -330,7 +416,13 @@ export class Big extends React.Component<BigProps, BigState> {
     return (
       <div className="over">
         <div className="big" style={sob}>
-          <img className="full" src={bigImg} onLoad={this.handleLoaded} />
+          <SwipeImg className="full" src={bigImg} onLoad={this.handleLoaded}
+            onSwipedLeftToRight={this.handlePrevClick}
+            onSwipedRightToLeft={this.handleNextClick}
+            onSwipedTopToBottom={this.handleCloseClick}
+            onSwipedBottomToTop={this.handleCloseClick}
+            onTapped={this.handlePlayPauseClick}
+            />
           <div className="below">
           
             <div className="flex-item">
