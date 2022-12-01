@@ -125,6 +125,8 @@ Here is an example:
 {
   "inputRootDir": "/Users/jupdike/Dropbox/PhotoAlbums",
   "outputRootDir": "/Users/jupdike/Dropbox/PhotoPublishing",
+  "s3bucketname": "updike-org",
+  "pathToWatermark": "/Users/jupdike/Documents/dev/jared-updike-org-mark.png",
   "albumName": "Photo Album Example Folder Name in inputRootDir"
 }
 ```
