@@ -1,20 +1,29 @@
 import React = require("react");
 //import TypedReact = require("typed-react");
 import Shared from './Shared'
+import { Interpolator } from './Interp'
 
-// create a reusable offscreen canvas
-var canvas = document.createElement("canvas");
-var ctx = canvas.getContext("2d");
+// create 2 reusable offscreen canvases
+let canvas = document.createElement("canvas");
+let ctx = canvas.getContext("2d");
 canvas.width = 4;
 canvas.height = 4;
 
+let canvasBig = document.createElement("canvas");
+let ctxBig = canvasBig.getContext("2d");
+canvasBig.width = 160;
+canvasBig.height = 160;
+
 class Gallery {
+  static clamp(x, low, hi) {
+    return Math.max(Math.min(x, hi), low);
+  }
   static make4x4ImgUrl(str) {
-    var imgData = ctx.getImageData(0,0,4,4);
-    var data = imgData.data;
+    let imgData = ctx.getImageData(0,0,4,4);
+    let data = imgData.data;
     // convert 24 bit
-    for(var i = 0; i < data.length; i += 4){
-      var offset = ((i|0) / 4)|0;
+    for(let i = 0; i < data.length; i += 4) {
+      let offset = ((i|0) / 4)|0;
       offset *= 6
       data[i+0] = parseInt(str.slice(offset+0, offset+2), 16);
       data[i+1] = parseInt(str.slice(offset+2, offset+4), 16);
@@ -23,10 +32,38 @@ class Gallery {
     }
     ctx.putImageData(imgData, 0, 0);
 
-    // TODO could resample using custom kernel, de-convolve and make what appears to be a gaussian blurred image
-    // as a 160x160 image (just do bicubic manually, should be fast enough)
+    // resample to 160x160 or whatever, using bicubic upsampling to make what appears to be a gaussian blurred image
+    // since Chrome only draws our tiny 4x4 image with bilinear upsampling, which looks awful in comparison to Safari's bicubic
 
-    return canvas.toDataURL();
+    // get r, g, or b data from little image we just made
+    function getter(c: number, y: number, x: number): number {
+      x = Gallery.clamp(x, 0, canvas.width - 1);
+      y = Gallery.clamp(y, 0, canvas.height - 1);
+      let i = (y * canvas.width + x) * 4;
+      return data[i+c];
+    }
+    let interp = new Interpolator(3, canvasBig.height, canvasBig.width, getter);
+    // go for it
+    let imgDataBig = ctxBig.getImageData(0, 0, canvasBig.width, canvasBig.height);
+    let dataBig = imgDataBig.data;
+    for(let y = 0; y < canvasBig.height; y++) {
+      let fy = 1.0 * (canvas.height - 0) * y / (canvasBig.height - 0) - 0.5; // floating point coordinate
+      for(let x = 0; x < canvasBig.width; x++) {
+        let i = (y * canvasBig.width + x) * 4;
+        let fx = 1.0 * (canvas.width - 0) * x / (canvasBig.width - 0) - 0.5; // floating point coordinate
+        for(let c = 0; c < 3; c++) {
+          // r, g, and b
+          let val = interp.BicubicGet(c, fy, fx);
+          val = Gallery.clamp(val, 0, 255);
+          dataBig[i+c] = val;
+        }
+        // alpha
+        dataBig[i+3] = 255;
+      }
+    }
+    ctxBig.putImageData(imgDataBig, 0, 0);
+
+    return canvasBig.toDataURL();
   }
 
   static make4x4BlackSquare(alpha) {
