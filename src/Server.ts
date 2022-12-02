@@ -11,13 +11,6 @@ import Shared from './client/scripts/Shared'
 import NitpicSettings from './NitpicSettings'
 import * as readline from 'readline';
 
-const termtest = "/Users/jupdike/Documents/dev/nitpic/term-test.py"
-//const s3pub = "/Users/jupdike/bin/s3pub"
-const s3cmd = "/usr/local/bin/s3cmd"
-const exiv2 = "/Users/jupdike/exiv2" // TODO need a way to package this in Electron bundle and reference it
-//const convert = "/bin/echo" // just for hack / testing
-const convert = "/usr/local/bin/convert" // ditto
-
 const gravD = {'c':'Center', 'n':'North',
                's':'South', 'e':'East', 'w':'West'}
 
@@ -83,7 +76,7 @@ export default class Server {
 
   readOneJpegExif(fname, ob, done) {
     const args = ['-P','EX','pr',this.basesrc+'/'+fname];
-    const child = execFile(exiv2, args, (error, stdout, stderr) => {
+    const child = execFile(this.settings.exiv2(), args, (error, stdout, stderr) => {
       //console.log("returned from exiv2 "+fname);
       stdout.split('\n').forEach( (val, index, array) => {
         //console.log(fname, '**', val);
@@ -309,7 +302,7 @@ export default class Server {
       res.send('<pre>'+preHtmlChunk+'</pre><br/><hr/><h2>Command to Execute</h2><br/><pre id="cmd">'+cmdStr+'</pre>');
 
       let serv = this;
-      let resultProcess = execFile(s3cmd, [
+      let resultProcess = execFile(this.settings.s3cmd(), [
         "--acl-public",
         "sync",
         this.settings.albumName(),
@@ -361,12 +354,12 @@ export default class Server {
         // console.log('---');
 
         const args = ['-m',cmdfile,'mo',fnamepath];
-        const child = execFile(exiv2, args, (error, stdout, stderr) => {
+        const child = execFile(this.settings.exiv2(), args, (error, stdout, stderr) => {
           if (error) {
             throw error;
           }
           //console.log(stdout);
-          console.log("called " + exiv2 + " " + args);
+          console.log("called " + this.settings.exiv2() + " " + args);
 
           // update global state so GET requests return up to date data (no serer restart necessary for page reload)
           this.state.bykey[fname].desc = desc;
@@ -445,7 +438,7 @@ export default class Server {
       done(null);
       return;
     }
-    const child = execFile(convert, args.split(' '), (error, stdout, stderr) => {
+    const child = execFile(this.settings.convert(), args.split(' '), (error, stdout, stderr) => {
       if (error) {
         console.error(error);
       }

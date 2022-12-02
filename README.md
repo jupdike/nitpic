@@ -127,6 +127,9 @@ Here is an example:
   "outputRootDir": "/Users/jupdike/Dropbox/PhotoPublishing",
   "s3bucketname": "updike-org",
   "pathToWatermark": "/Users/jupdike/Documents/dev/jared-updike-org-mark.png",
+  "exiv2Path": "/Users/jupdike/exiv2",
+  "convertPath": "/usr/local/bin/convert",
+  "s3cmdPath": "/usr/local/bin/s3cmd",
   "albumName": "Photo Album Example Folder Name in inputRootDir"
 }
 ```

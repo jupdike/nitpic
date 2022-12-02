@@ -101,6 +101,19 @@ export default class NitpicSettings {
     }
     return ret;
   }
+
+  public exiv2(): string {
+    return this.settings.exiv2Path as string;
+  }
+
+  public convert(): string {
+    return this.settings.convertPath as string;
+  }
+
+  public s3cmd(): string {
+    return this.settings.s3cmdPath as string;
+  }
+
   inputRootDir(): string {
     return this.settings.inputRootDir as string;
   }
