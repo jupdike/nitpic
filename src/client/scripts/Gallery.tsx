@@ -11,8 +11,8 @@ canvas.height = 4;
 
 let canvasBig = document.createElement("canvas");
 let ctxBig = canvasBig.getContext("2d");
-canvasBig.width = 160;
-canvasBig.height = 160;
+canvasBig.width = 40;
+canvasBig.height = 40;
 
 class Gallery {
   static clamp(x, low, hi) {
