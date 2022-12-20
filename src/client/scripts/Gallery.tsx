@@ -261,6 +261,11 @@ export class SwipeImg extends React.Component<SwipeImgProps, SwipeImgState> {
     this.handleTouchEnd = this.handleTouchEnd.bind(this);
   }
   handleTouchStart(event) {
+    if(event.changedTouches.length > 1) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
     //console.log('touchStart:', event.changedTouches[0].pageX, event.changedTouches[0].pageY);
     this.setState({startPageX: event.changedTouches[0].pageX, startPageY: event.changedTouches[0].pageY, dx:0, dy: 0});
   }
@@ -273,47 +278,57 @@ export class SwipeImg extends React.Component<SwipeImgProps, SwipeImgState> {
     this.setState({startPageX: this.state.startPageX, startPageY: this.state.startPageY, dx: dx, dy: dy});
   }
   handleTouchMove(event) {
+    if(event.changedTouches.length > 1) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
     //console.log('touchMove:', event.changedTouches[0].pageX, event.changedTouches[0].pageY);
     this.processPosition(event.changedTouches[0].pageX, event.changedTouches[0].pageY);
   }
   handleTouchEnd(event) {
+    if(event.changedTouches.length > 1) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
     //console.log('touchEnd:', event.changedTouches[0].pageX, event.changedTouches[0].pageY);
     const MINIMUM = 20;
     let movedEnough = (Math.abs(this.state.dx) + Math.abs(this.state.dy)) > MINIMUM;
     let horiz = Math.abs(this.state.dx) > Math.abs(this.state.dy);
     let vert = Math.abs(this.state.dy) > Math.abs(this.state.dx);
     if(this.state.dx < 0 && horiz && movedEnough) {
-      console.log("call onSwipedRightToLeft");
+      //console.log("call onSwipedRightToLeft");
       if(this.props.onSwipedRightToLeft) {
         this.props.onSwipedRightToLeft();
       }
     }
     else if(this.state.dx > 0 && horiz && movedEnough) {
-      console.log("call onSwipedLeftToRight");
+      //console.log("call onSwipedLeftToRight");
       if(this.props.onSwipedLeftToRight) {
         this.props.onSwipedLeftToRight();
       }
     }
     else if(this.state.dy < 0 && vert && movedEnough) {
-      console.log("call onSwipedBottomToTop");
+      //console.log("call onSwipedBottomToTop");
       if(this.props.onSwipedBottomToTop) {
         this.props.onSwipedBottomToTop();
       }
     }
     else if(this.state.dy > 0 && vert && movedEnough) {
-      console.log("call onSwipedTopToBottom");
+      //console.log("call onSwipedTopToBottom");
       if(this.props.onSwipedTopToBottom) {
         this.props.onSwipedTopToBottom();
       }
     } else if(!movedEnough) {
-      console.log("call onTapped");
+      //console.log("call onTapped");
       if(this.props.onTapped) {
         this.props.onTapped();
       }
     }
   }
   render() {
-    return <img className="full" src={this.props.src} onLoad={this.props.onLoad}
+    return <img className="full" style={{"touch-action": "none"}} src={this.props.src} onLoad={this.props.onLoad}
       onTouchStart={this.handleTouchStart}
       onTouchMove={this.handleTouchMove}
       onTouchEnd={this.handleTouchEnd}
