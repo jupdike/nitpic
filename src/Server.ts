@@ -122,11 +122,62 @@ export default class Server {
     });
   }
 
+  // WARNING: may not be available on Linux, or may be wrong, or be empty or whatever. Also, untested on Windows. Works on macOS.
+  birthTimeMsSync(path) {
+    var stats = null;
+    try {
+      stats = fs.statSync(path);
+    }
+    catch (e) {
+      return 0;
+    }
+    if (stats && stats.isFile()) {
+      // WARNING: may not be available on Linux, or may be wrong, or be empty or whatever. Also, untested on Windows. Works on macOS.
+      return stats.birthtimeMs;
+    }
+  }
+
+  sortedReadDirSync(basesrc) {
+    let list = fs.readdirSync(basesrc);
+    // This works but is redundant because the async.forEach multi-process code called later
+    // will add items to .list in a nondeterministic order, so we must sort later by btime
+
+    // list = list.filter((f: string) => {
+    //   if(f == '.DS_Store') {
+    //     return false;
+    //   }
+    //   let fLower = f.toLowerCase();
+    //   let p = path.join(basesrc, f);
+    //   if(this.fileExists(p) && (fLower.endsWith('.jpeg') || fLower.endsWith('.jpg'))) {
+    //     return true;
+    //   }
+    //   return false; // may be a directory
+    // });
+    // let that = this;
+    // let pairs: Array<any> = list.map((f: string) => {
+    //   let btime: number = that.birthTimeMsSync(path.join(basesrc, f));
+    //   return {file: f, btime: btime};
+    // });
+    
+    // //console.log("SORT INFO:", pairs[0], pairs[1]);
+    // pairs.sort((a, b) => {
+    //   if(a.btime < b.btime) {
+    //     return 1;
+    //   } else if (a.btime > b.btime) {
+    //     return -1;
+    //   } else {
+    //     return 0;
+    //   }
+    // });
+    return list; //pairs.map(p => p.file);
+  }
+
   readMetadata(callback) {
+    let that = this;
     console.log("READING METADATA");
 
     // read the stuff from JPEG files into JSON objects!
-    var files = fs.readdirSync(this.basesrc);
+    var files = this.sortedReadDirSync(this.basesrc);
     var dots = 0;
     var count = 0;
     async.forEachOfLimit(files, 32,
@@ -136,7 +187,7 @@ export default class Server {
           cb(null); // skipped a file; must track this!
           return;
         }
-        var ob = { fname: val, index: count }; // index != correct count since we skip .DS_STORE, etc. (frown)
+        var ob: any = { fname: val, index: count }; // index != correct count since we skip .DS_STORE, etc. (frown)
         count++;
         this.state.list.push(ob);
         this.state.bykey[val] = ob;
@@ -144,6 +195,7 @@ export default class Server {
           if (err) {
             console.error(err.message);
           }
+          ob.btime = that.birthTimeMsSync(path.join(that.basesrc, ob.fname));
           var expectedDots = (index*100.0)/files.length;
           while (dots < expectedDots) {
             fs.writeSync(1, ".");
@@ -159,10 +211,20 @@ export default class Server {
           console.error(err.message);
         }
         // sort by datetime to get things mostly into the order things were shot!
+        // this.state.list.sort((a, b) => {
+        //   if (a.datetime > b.datetime) {
+        //     return 1;
+        //   } else if (a.datetime < b.datetime) {
+        //     return -1;
+        //   } else {
+        //     return 0;
+        //   }
+        // });
+        // sort by birthtimeMs to get things mostly into the order things were shot!
         this.state.list.sort((a, b) => {
-          if (a.datetime > b.datetime) {
+          if (a.btime > b.btime) {
             return 1;
-          } else if (a.datetime < b.datetime) {
+          } else if (a.btime < b.btime) {
             return -1;
           } else {
             return 0;
@@ -499,7 +561,7 @@ export default class Server {
 
   public convertThumbnails(numcores, allDone) {
     var work = [];
-    var files = fs.readdirSync(this.basesrc);
+    var files = this.sortedReadDirSync(this.basesrc);
     files.forEach((file) => {
       if (! (file.toLowerCase().endsWith('.jpg') || file.toLowerCase().endsWith('.jpeg')) ) {
         return; // only process thumbnails for JPG / JPEG / etc.
