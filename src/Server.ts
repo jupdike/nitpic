@@ -139,37 +139,41 @@ export default class Server {
 
   sortedReadDirSync(basesrc) {
     let list = fs.readdirSync(basesrc);
+
     // This works but is redundant because the async.forEach multi-process code called later
     // will add items to .list in a nondeterministic order, so we must sort later by btime
-
-    // list = list.filter((f: string) => {
-    //   if(f == '.DS_Store') {
-    //     return false;
-    //   }
-    //   let fLower = f.toLowerCase();
-    //   let p = path.join(basesrc, f);
-    //   if(this.fileExists(p) && (fLower.endsWith('.jpeg') || fLower.endsWith('.jpg'))) {
-    //     return true;
-    //   }
-    //   return false; // may be a directory
-    // });
-    // let that = this;
-    // let pairs: Array<any> = list.map((f: string) => {
-    //   let btime: number = that.birthTimeMsSync(path.join(basesrc, f));
-    //   return {file: f, btime: btime};
-    // });
+    list = list.filter((f: string) => {
+      if(f == '.DS_Store') {
+        return false;
+      }
+      let fLower = f.toLowerCase();
+      let p = path.join(basesrc, f);
+      if(this.fileExists(p) && (fLower.endsWith('.jpeg') || fLower.endsWith('.jpg'))) {
+        return true;
+      }
+      return false; // may be a directory
+    });
+    let that = this;
+    let pairs: Array<any> = list.map((f: string) => {
+      let btime: number = that.birthTimeMsSync(path.join(basesrc, f));
+      return {file: f, btime: btime};
+    });
     
-    // //console.log("SORT INFO:", pairs[0], pairs[1]);
-    // pairs.sort((a, b) => {
-    //   if(a.btime < b.btime) {
-    //     return 1;
-    //   } else if (a.btime > b.btime) {
-    //     return -1;
-    //   } else {
-    //     return 0;
-    //   }
-    // });
-    return list; //pairs.map(p => p.file);
+    //console.log("SORT INFO:", pairs[0], pairs[1]);
+    pairs.sort((a, b) => {
+      if(a.btime < b.btime) {
+        return 1;
+      } else if (a.btime > b.btime) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+    //console.log(pairs);
+    list = pairs.map(p => p.file);
+    //
+
+    return list;
   }
 
   readMetadata(callback) {
@@ -183,10 +187,10 @@ export default class Server {
     async.forEachOfLimit(files, 32,
       // call this function once for each file
       (val, index, cb) => {
-        if (! (val.toLowerCase().endsWith('.jpg') || val.toLowerCase().endsWith('.jpeg')) ) {
-          cb(null); // skipped a file; must track this!
-          return;
-        }
+        // if (! (val.toLowerCase().endsWith('.jpg') || val.toLowerCase().endsWith('.jpeg')) ) {
+        //   cb(null); // skipped a file; must track this!
+        //   return;
+        // }
         var ob: any = { fname: val, index: count }; // index != correct count since we skip .DS_STORE, etc. (frown)
         count++;
         this.state.list.push(ob);
