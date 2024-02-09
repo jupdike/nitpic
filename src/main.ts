@@ -26,7 +26,7 @@ function getAppDataPath() {
 }
 
 const numcpus = os.cpus().length;
-const numcores = (numcpus*0.75)|0;
+const numcores = (numcpus*0.25)|0 + 1;
 
 var settings: NitpicSettings;
 var server: Server;
