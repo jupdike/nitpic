@@ -126,6 +126,10 @@ export default class NitpicSettings {
     return this.settings.albumName as string;
   }
 
+  public maxLength(): number {
+    return this.settings.maxLength as number;
+  }
+
   public s3bucketname(): string {
     return this.settings.s3bucketname as string;
   }

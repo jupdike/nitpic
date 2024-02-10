@@ -22,11 +22,11 @@ export class RenderClass {
     ].join(" ");
     return d;
   }
-  public static RenderEditAlbum(url, key, contentDivId, showUrlWindow) {
-    console.log("call RenderEditAlbum");
+  public static RenderEditAlbum(url, key, maxLength, contentDivId, showUrlWindow) {
+    console.log("called RenderEditAlbum with maxLength =", maxLength);
     //document.getElementById(contentDivId).innerHTML = "";
     ReactDOM.render(
-      <EditAlbum key={key} showUrlWindow={showUrlWindow} hostRoot="http://localhost:3000/" thumbsUrlBase="static/" url={url}/>,
+      <EditAlbum key={key} showUrlWindow={showUrlWindow} maxLength={maxLength} hostRoot="http://localhost:3000/" thumbsUrlBase="static/" url={url}/>,
       document.getElementById(contentDivId)
     );
   }

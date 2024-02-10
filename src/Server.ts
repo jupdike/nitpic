@@ -328,7 +328,7 @@ export default class Server {
     this.noPub = this.fileExists(combined);
     console.log('noPub:', this.noPub);
 
-    this.state = { list: [], bykey: {}, index: 0, key: 0 };
+    this.state = { list: [], bykey: {}, index: 0, key: 0, maxLength: this.settings.maxLength() };
   }
 
   sendToAllSockets(line) {
@@ -363,7 +363,7 @@ export default class Server {
       let publishFolder = publishFolderPieces[publishFolderPieces.length-2];
       let idName = 'gal-' + this.settings.albumName().toLowerCase().replace(/ /g, '-')
       let cmdStr = `(cd ${this.settings.outputRootDir()} && s3cmd --acl-public sync ${this.settings.albumName()} s3://${this.settings.s3bucketname()}/${publishFolder}/)`
-      let htmlSnip = `<div id="${idName}" class="contents"></div>\n<script>\n  RenderSide.RenderClass.RenderGalleryAlbum(\n  'https://${this.settings.s3bucketname()}.s3-us-west-2.amazonaws.com/${publishFolder}/${this.settings.albumName()}/',\n  'index.json',\n  '${idName}');\n</script>\n<br/>`
+      let htmlSnip = `<div id="${idName}" class="contents"></div>\n<script>\n  RenderSide.RenderClass.RenderGalleryAlbum(\n  'https://${this.settings.s3bucketname()}.s3-us-west-2.amazonaws.com/${publishFolder}/${this.settings.albumName()}/',\n  'index.json',\n  ${this.settings.maxLength()},\n  '${idName}');\n</script>\n<br/>`
       let preHtmlChunk = htmlSnip.replace(/\</g,'&lt;').replace(/\>/g,'&gt;');
       res.send('<pre>'+preHtmlChunk+'</pre><br/><hr/><h2>Command to Execute</h2><br/><pre id="cmd">'+cmdStr+'</pre>');
 
@@ -552,8 +552,8 @@ export default class Server {
       work.push({fout:out3, args: pre+e+"[130x130] -auto-orient -thumbnail 130x130 -sharpen 1 -gravity Center "+out3});
       // out4 @ 1200x1560
       // 1560/1200 = 1.3 or 13x10
-      const out4 = pub+"/1560."+e;
-      work.push({fout:out4, args: "-auto-orient -quality 83 -resize 1560x1560> -gravity Center -sharpen 1 " + pre+e + watermarkCmd + out4});
+      const out4 = pub+"/"+this.settings.maxLength()+"."+e;
+      work.push({fout:out4, args: "-auto-orient -quality 83 -resize "+this.settings.maxLength()+"x"+this.settings.maxLength()+"> -gravity Center -sharpen 1 " + pre+e + watermarkCmd + out4});
   
       for (const grav of 'c n s e w'.split(' ')) {
         const out3 = pub+"/sq"+grav+"."+e;

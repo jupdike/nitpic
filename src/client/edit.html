@@ -51,6 +51,7 @@
     <script src="./bundle.js"></script>
 
     <script>
+      var maxLength = 1560; // this gets updated and set by 'metadata-read' message below, when a folder is loaded
       $("#preview").click((event) => {
         console.log("clicked Preview");
         ipc.send('show-preview');
@@ -93,9 +94,10 @@
       });
       key = 0;
       ipc.on('metadata-read', (event, arg) => {
-        console.log('Metadata has finished being read');
+        console.log('Metadata has finished being read, arg =', arg);
         key++;
-        RenderSide.RenderClass.RenderEditAlbum('api/pics', key, 'content', (url) => { ipc.send('show-url-window', url)});
+        maxLength = arg.maxLength;
+        RenderSide.RenderClass.RenderEditAlbum('api/pics', key, maxLength, 'content', (url) => { ipc.send('show-url-window', url)});
       });
     </script>
 

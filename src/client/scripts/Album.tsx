@@ -8,6 +8,7 @@ export interface AlbumProps {
   url: string;
   hostRoot: string;
   thumbsUrlBase: string;
+  maxLength: number;
   showUrlWindow: (url: string) => void;
 }
 export interface AlbumState {
@@ -24,7 +25,8 @@ export class EditAlbum extends React.Component<AlbumProps, AlbumState> {
   render() {
     var picNodes = this.state.data.list.map((pic) => {
       return (
-        <Pic key={pic.fname} showUrlWindow={this.props.showUrlWindow} thumbsUrlBase={this.props.thumbsUrlBase} hostRoot={this.props.hostRoot}
+        <Pic key={pic.fname} maxLength={this.props.maxLength}
+             showUrlWindow={this.props.showUrlWindow} thumbsUrlBase={this.props.thumbsUrlBase} hostRoot={this.props.hostRoot}
              fname={pic.fname} desc={pic.desc} title={pic.title} />
       );
     });
@@ -38,6 +40,7 @@ export class EditAlbum extends React.Component<AlbumProps, AlbumState> {
 
 interface PicProps {
   hostRoot, thumbsUrlBase, title, desc, fname: string;
+  maxLength: number;
   showUrlWindow: (url: string) => void;
 }
 interface PicState {
@@ -67,7 +70,8 @@ class Pic extends React.Component<PicProps, PicState> {
       });
   }
   picOnClickFunc(props) {
-    let urlToBigImg = props.hostRoot + props.thumbsUrlBase + '1560.' + props.fname;
+    console.log('picOnClickFunc, props:', props);
+    let urlToBigImg = props.hostRoot + props.thumbsUrlBase + props.maxLength + '.' + props.fname;
     console.log("want to open window with URL =", urlToBigImg);
     props.showUrlWindow(urlToBigImg);
   }

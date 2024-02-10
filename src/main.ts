@@ -143,6 +143,8 @@ function createWindow() {
   var datapath = path.join(getAppDataPath(), 'Nitpic', 'Settings');
   settings = new NitpicSettings(datapath);
 
+  console.log("maxLength is: "+settings.maxLength());
+
   console.log("OS says it has this many cores : "+numcpus); // could be 2x physical cores, because of hyper-threading
   console.log("OS probably has this many cores: "+numcores);
 
@@ -190,11 +192,14 @@ function funcIndexPageLoadedOrOpenFolder(event, requestUserPickFolder) {
   }
   ipc_send("progress-update", {progress: 0, message: "Ready"});
   ipc_send("update-publish-button", {noPub: server.noPub});
-  ipc_send("progress-update", {folderName: settings.albumName()});
+  ipc_send("progress-update", {folderName: settings.albumName() + " @" + settings.maxLength()+"px"});
   server.convertThumbnails(numcores, () => {
     server.readMetadata( () => {
+      console.log('sending progress-update');
       ipc_send("progress-update", {progress: 0, message: "Ready"});
-      ipc_send('metadata-read');
+      let arg = {maxLength: settings.maxLength()};
+      console.log('sending metadata-read with ', arg);
+      ipc_send('metadata-read', arg);
     });
   });
 }

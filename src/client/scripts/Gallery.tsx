@@ -425,7 +425,7 @@ export class Big extends React.Component<BigProps, BigState> {
       newIndex = this.state.data.list.length - 1;
     }
     this.setState({smallLoaded: false, visible: this.state.visible, playing: false,
-      data: { list: this.state.data.list, bykey: this.state.data.bykey, index: newIndex, key: this.state.data.key } });
+      data: { list: this.state.data.list, bykey: this.state.data.bykey, index: newIndex, key: this.state.data.key,  maxLength: this.state.data.maxLength } });
   }
   handleNextClick(e) {
     var newIndex = this.state.data.index + 1;
@@ -433,7 +433,7 @@ export class Big extends React.Component<BigProps, BigState> {
       newIndex = 0;
     }
     this.setState({smallLoaded: false, visible: this.state.visible, playing: this.state.playing,
-      data: { list: this.state.data.list, bykey: this.state.data.bykey, index: newIndex, key: this.state.data.key } });
+      data: { list: this.state.data.list, bykey: this.state.data.bykey, index: newIndex, key: this.state.data.key, maxLength: this.state.data.maxLength } });
     console.log('playing', this.state.playing);
   }
   render() {
@@ -444,7 +444,7 @@ export class Big extends React.Component<BigProps, BigState> {
     var fname = info.fname;
     var bigImg = this.props.hostRoot + "130." + fname;
     if (this.state.smallLoaded) {
-      bigImg = this.props.hostRoot + "1560." + fname;
+      bigImg = this.props.hostRoot + this.state.data.maxLength + "." + fname;
     }
     // var style = {
     //   backgroundImage: 'url("'+bigImg+'")',
@@ -510,6 +510,7 @@ interface DataInner {
   bykey: any;
   index: number;
   key: number;
+  maxLength: number;
 }
 interface ThumbsProps {
    hostRoot, jsonFile: string;
@@ -519,7 +520,7 @@ interface ThumbsState {
   data: DataInner;
 }
 export class Thumbs extends React.Component<ThumbsProps, ThumbsState> {
-  state: ThumbsState = { visible: false, data: { list: [], bykey: {}, index: 0, key: 0 } }
+  state: ThumbsState = { visible: false, data: { list: [], bykey: {}, index: 0, key: 0, maxLength: -1337 } }
   constructor(props: ThumbsProps) {
     super(props);
     this.handleSetIndex = this.handleSetIndex.bind(this); // such BS that this is necessary
@@ -532,8 +533,8 @@ export class Thumbs extends React.Component<ThumbsProps, ThumbsState> {
   }
   handleSetIndex(index) {
     // modify 'key' every time we change the index so Big can re-render with new state (resets its smallLoaded to false)
-    var data = {list: this.state.data.list, bykey: this.state.data.bykey, index: index,
-      key: this.state.data.key + 1};
+    var data: DataInner = {list: this.state.data.list, bykey: this.state.data.bykey, index: index,
+      key: this.state.data.key + 1, maxLength: this.state.data.maxLength};
     // make visible when a thing gets clicked
     this.setState({visible: true, data: data});
   }

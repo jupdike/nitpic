@@ -130,7 +130,8 @@ Here is an example:
   "exiv2Path": "/Users/jupdike/exiv2",
   "convertPath": "/usr/local/bin/convert",
   "s3cmdPath": "/usr/local/bin/s3cmd",
-  "albumName": "Photo Album Example Folder Name in inputRootDir"
+  "maxLength": 1560,
+  "albumName": "Art-Fabulous"
 }
 ```
 
