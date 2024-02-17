@@ -366,11 +366,11 @@ export class Big extends React.Component<BigProps, BigState> {
         return; // don't do anything unless this Big component is visible
       }
       console.log('pressed '+e.which);
-      if (e.which == 37) { // left arrow 
+      if (e.which == 37 || e.which == 38 || e.which == 72 || e.which == 75) { // left arrow or up arrow or H key (left in VIM) or K key (up in VIM) -- navigate w/o panning content if zoomed (arrow keys send to browser itself)
         e.preventDefault();
         this.handlePrevClick(null);
       }
-      else if (e.which == 39) { // right arrow
+      else if (e.which == 39 || e.which == 40 || e.which == 74 || e.which == 76) { // right arrow or down arrow or L key (right in VIM) or J key (down in VIM) -- navigate w/o panning content if zoomed (arrow keys send to browser itself)
         e.preventDefault();
         this.handleNextClick(null);
       }
