@@ -525,10 +525,30 @@ export class Thumbs extends React.Component<ThumbsProps, ThumbsState> {
     super(props);
     this.handleSetIndex = this.handleSetIndex.bind(this); // such BS that this is necessary
   }
+  toggleFullscreen() {
+    let elem = document.querySelector(".album");
+    if (!document.fullscreenElement) {
+      elem.requestFullscreen()
+      /* .catch((err) => { // causes a build error
+        alert(
+          `Error attempting to enable fullscreen mode: ${err.message} (${err.name})`,
+        );
+      });*/
+    } else {
+      document.exitFullscreen();
+    }
+  }
   componentDidMount() {
     Shared.ajaxGetHelper(this.props.hostRoot + this.props.jsonFile,
       (data) => {
         this.setState({ visible: this.state.visible, data: data });
+      });
+      let that = this;
+      $(document).bind('keyup', (e) => {
+        console.log('pressed '+e.which);
+        if (e.which == 13) { // enter key
+          that.toggleFullscreen();
+        }
       });
   }
   handleSetIndex(index) {
