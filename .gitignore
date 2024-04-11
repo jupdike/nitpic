@@ -3,3 +3,4 @@ build/*
 src/*.js
 *.js.map
 src/client/scripts/*.js
+.DS_Store

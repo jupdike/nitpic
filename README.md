@@ -49,7 +49,7 @@ Nitpic has some cool features not found elsewhere:
 - **Square cropping**, but with class: adjust the crop whether your images is portrait or
 landscape, just choose north, south, east, or west, if center cropping is not working
 on any specific image.
-- **Blurry image previews**: fast loading 4x4 pixel thumbnails look gorgeous and make it
+- **Blurry image previews**: fast loading 6x6 pixel thumbnails look gorgeous and make it
 clear that your page is loading. (The image data for these tiny "thumbnails" is in the album
 JSON, along with the image captions, so it loads really fast, all at once. Great for really
 large galleries.)
@@ -65,7 +65,7 @@ liking.
 - **Keyboard-ready**: zip through the slideshow/fullscreen mode with the Arrow Keys. Hit Spacebar
 to Play/Pause and Esc to exit.
 - **Touch-ready**: looks great on mobile phones and tablets and works great, in terms of large touch
-targets.
+targets and swipe gestures.
 
 ### "Pic" and Choose
 
@@ -140,11 +140,20 @@ Then
 - brew install imagemagick
 - brew install exiv2 (or from source... hmmm... double check this)
 - brew install s3cmd
-- TODO document that we need to set the full path for each of those binaries
-- TODO document how to make Nitpic.app in parallel `nitpic-dist` folder by copying `node_modules/electron/dist/Electron.app` and renaming a few things and adding .icns file and Info.plist...
+- sudo npm install -g webpack webpack-cli
 - Execute npm install -- to get Electron, React, jQuery packages installed into node_modules
+
+- IMPORTANT to make Nitpic.app in parallel `nitpic-dist` folder by copying `node_modules/electron/dist/Electron.app` (like 205 MB) and renaming a few things and adding .icns file and edit Info.plist...
+  - nitpic.icns is in ~/Dropbox/_Done/ ... copy to ~/Documents/dev/nitpic-dist/ and copy again nitpic-dist/Nitpic.app/Contents/Resources/ ...
+  - cd node_modules/electron/dist && open  ---- and rename copied Electron.app to Nitpic.app, move to ~/Documents/dev/jfu/nitpic-dist/
+  - rename /Users/jupdike/Documents/dev/fju/nitpic-dist/Nitpic.app/Contents/MacOS/Electron to Nitpic (true exectuable binary itself)
+  - edit Info.plist and change CFBundleName to Nitpic and CFBundleIconFile to nitpic.icns and CFBundleIdentifier to org.updike.nitpic  AND CFBundleDisplayName and CFBundleExecutable to Nitpic
+
 - Execute ./build.sh to create build/ and compile .ts to .js files, etc.
 - Run ./run.sh to launch Electron app.
+  - move that to keep in Dock and you are in business
+
+- TODO get watermark PNG image and put it in the right place (check nitpic.json)
 
 ## IMAGE MAGICK CONVERT static commandline build stuff (Work in Progress)
 

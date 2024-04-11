@@ -1,4 +1,4 @@
-/// <reference path="/Users/jupdike/Documents/dev/nitpic/node_modules/@types/node/index.d.ts" />
+// / / /   < r e f e rence path="/Users/jupdike/Documents/dev/nitpic/node_modules/@types/node/index.d.ts" />
 
 const fs = require('fs')
 const path = require('path')

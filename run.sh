@@ -4,4 +4,4 @@
 
 # "inferno": "~0.7.27"
 
-~/Documents/dev/nitpic-dist/Nitpic.app/Contents/MacOS/Nitpic
+~/Documents/dev/jfu/nitpic-dist/Nitpic.app/Contents/MacOS/Nitpic
