@@ -328,7 +328,7 @@ export class SwipeImg extends React.Component<SwipeImgProps, SwipeImgState> {
     }
   }
   render() {
-    return <img className="full" style={{"touch-action": "none"}} src={this.props.src} onLoad={this.props.onLoad}
+    return <img className="full" style={{"touchAction": "none"}} src={this.props.src} onLoad={this.props.onLoad}
       onTouchStart={this.handleTouchStart}
       onTouchMove={this.handleTouchMove}
       onTouchEnd={this.handleTouchEnd}

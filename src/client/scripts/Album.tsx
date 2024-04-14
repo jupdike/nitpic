@@ -1,5 +1,5 @@
-/// <reference path="/Users/jupdike/Documents/dev/nitpic/node_modules/@types/jquery/index.d.ts" />
-/// <reference path="/Users/jupdike/Documents/dev/nitpic/node_modules/@types/react/index.d.ts" />
+// / / /   < r e f erence path="/Users/jupdike/Documents/dev/nitpic/node_modules/@types/jquery/index.d.ts" />
+// / / /   < r e f erence path="/Users/jupdike/Documents/dev/nitpic/node_modules/@types/react/index.d.ts" />
 
 import MyCode from './Shared'
 import React = require("react");
@@ -31,7 +31,7 @@ export class EditAlbum extends React.Component<AlbumProps, AlbumState> {
       );
     });
     return (
-      <div className="album" data={this.state.data}>
+      <div className="album" data-list={this.state.data.list} data-bykey={this.state.data.bykey}>
         {picNodes}
       </div>
     );
@@ -125,7 +125,7 @@ class Caption extends React.Component<CaptionProps, CaptionState> {
     if (this.state.editing)
       return (
         <textarea
-          style={{"font-size": "80%"}}
+          style={{"fontSize": "80%"}}
           rows={4}
           autoFocus
           onKeyDown={this.handleKeyDown}
